@@ -1,5 +1,7 @@
 import {Component, EventEmitter, Output} from '@angular/core';
 
+declare var $: any;
+
 @Component({
   selector: 'app-username',
   templateUrl: './username.component.html',
@@ -10,10 +12,18 @@ export class UsernameComponent {
 
   userName:string = "";
 
+  ngOnInit(): void {
+    // Show the modal on page load
+    $(document).ready(function() {
+      $('#loginModal').modal('show');
+    });
+  }
+
   constructor() {
   }
 
   setUserName() {
     this.userNameEvent.emit(this.userName);
+    $('#loginModal').modal('hide');
   }
 }
