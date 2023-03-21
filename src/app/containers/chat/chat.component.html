@@ -1,4 +1,4 @@
-<div class="containter">
+<div class="container">
   <app-username (userNameEvent)="userNameUpdate($event)" *ngIf="!userName"></app-username>
   <h1>TOTYL - Chat</h1>
   <div class="chatbox">
@@ -20,6 +20,8 @@
       </div>
     </div>
   </div>
-  <input type="text" [(ngModel)]="message">
-  <button (click)="sendMessage()">Send</button>
+  <div id="chatbox_input" class="chatbox_input">
+    <input type="text" [(ngModel)]="message">
+    <button (click)="sendMessage()">Send</button>
+  </div>
 </div>
