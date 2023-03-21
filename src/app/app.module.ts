@@ -6,12 +6,14 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ChatComponent } from './containers/chat/chat.component';
 import { UsernameComponent } from './components/username/username.component';
+import { AboutComponent } from './containers/about/about.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ChatComponent,
-    UsernameComponent
+    UsernameComponent,
+    AboutComponent
   ],
   imports: [
     BrowserModule,
