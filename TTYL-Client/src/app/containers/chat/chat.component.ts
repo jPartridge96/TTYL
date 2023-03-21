@@ -36,5 +36,7 @@ export class ChatComponent {
     this.socket.emit('message', this.message);
     this.messageList.push({message: this.message, userName: this.userName, isSender: true});
     this.message = '';
+
+    window.scrollTo(0, document.body.scrollHeight);
   }
 }
