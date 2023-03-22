@@ -1,8 +1,9 @@
+const bootTimeStart = process.hrtime();
+
 // Server Configuration //
 const SERV_NAME = "TOTYL"
 const SERV_VER = 0.01;
 const SERV_PORT = 3000;
-
 
 // Required Imports //
 const express = require('express');
@@ -18,12 +19,12 @@ const io = require('socket.io')(http, {
  });
 
  app.get('/', (req, res) => {
-    res.send(`${SERV_NAME}`);
+    getServVer().then((ver) => res.send(ver));
  });
 
 let userList = new Map();
 
-// When user connects
+// When user connects - init user data and add socket events
 io.on('connection', (socket) => {
     let userName = socket.handshake.query.userName;
     addUser(userName, socket.id);
@@ -66,12 +67,35 @@ function delUser(userName, id) {
     }
 }
 
-try {
-    let bootTime = 10;
-    console.log(`${SERV_NAME}-${SERV_VER} is starting on port ${SERV_PORT}`);
-    http.listen(SERV_PORT, () => {
-        console.log(`${SERV_NAME}-${SERV_VER} launched successfully after ${bootTime}ms`);
+// Returns FQSV using commit counts with GitHub API
+// Format: <major>.<minor>.<commit>
+function getServVer() {
+    const repoName = "TTYL";
+    const ownerName = "jPartridge96";
+    const accessToken = "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";
+    const url = `https://api.github.com/repos/${ownerName}/${repoName}/commits`;
+
+    return fetch(url, {
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+        },
+    })
+    .then((response) => response.json())
+    .then((data) => {
+        return `${SERV_NAME}-${SERV_VER}.${data.length}`;
     });
-} catch (error) {
-    console.log(`${SERV_NAME}-${SERV_VER} could not be started: ${error}`);
 }
+
+// Server launcher
+getServVer().then((build) => {
+    try {
+        console.log(`${build} is starting on port ${SERV_PORT}`);
+        http.listen(SERV_PORT, () => {
+            const bootTimeEnd = process.hrtime(bootTimeStart);
+            const bootTimeMs = Math.round((bootTimeEnd[0] * 1000) + (bootTimeEnd[1] / 1000000));
+            console.log(`${build} launched successfully after ${bootTimeMs}ms`);
+        });
+    } catch (error) {
+        console.log(`${build} could not be started: ${error}`);
+    }
+});
