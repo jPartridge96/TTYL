@@ -25,6 +25,28 @@ const SERV_PORT = 3000;
 const logsDir = './logs';
 const fileName = `${logsDir}/totyl_${moment.utc().format('M-DD-YYYY_HH-mm-ss')}.log`;
 
+//connect to mysql //
+
+const mysql = require('mysql2');
+
+//create the connection
+const connection = mysql.createConnection({
+    host: 'localhost', //localhost unless hosted elsewhere
+    user: 'root', //leave as root (the user you sign on with when you connect to server)
+    password: '?', //password for that
+    database: 'TTYLdb' //name the database
+});
+
+//connect to database
+connection.connect((err) => {
+    if(err) {
+        console.log('error connecting to the serve', err);
+        return;
+    }
+
+    console.log('Connected to server', connection.threadId);
+});
+
 if (!fs.existsSync(logsDir)) {
   fs.mkdirSync(logsDir);
 }
@@ -101,6 +123,21 @@ function addUser(userName, id) {
         userList.get(userName).add(id);
     }
 }
+
+//Add user to server
+function addUsertoServer(name, email, password) {
+    const query = 'INSERT INTO users (name, email, password) VALUES (?, ?, ?)';
+
+    connection.query(query, [name, email, password], (err, result) => {
+        if (err) {
+            console.error('Error inserting data:', err.stack);
+            return;
+        }
+
+        console.log('Data inserted with ID:', result.insertId);
+    });
+}
+addUsertoServer('John Doe', 'john.doe@example.com', 'johns_password');
 
 // Remove user from the chat room
 function delUser(userName, id) {
