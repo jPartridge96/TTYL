@@ -39,6 +39,17 @@ export class ChatComponent {
   }
 
   sendMessage(): void {
+    const errorMessage = document.getElementById('chatInput');
+    if (!this.message || this.message.trim().length === 0) {
+      if(errorMessage){
+        errorMessage.innerHTML = 'Please enter a message!';
+      }
+      return;
+    } else {
+      if(errorMessage)
+      errorMessage.innerText = '';
+    }
+
     this.socket.emit('message', this.message);
     this.messageList.push({ message: this.message, userName: this.userName, isSender: true });
 
@@ -48,6 +59,7 @@ export class ChatComponent {
     this.message = '';
     window.scrollTo(0, document.body.scrollHeight);
   }
+
 
   showEmojiPicker() {
     const emojiPicker = document.createElement('div');
