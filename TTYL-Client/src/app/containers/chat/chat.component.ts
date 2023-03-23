@@ -60,6 +60,7 @@ export class ChatComponent {
       emojiButton.addEventListener('click', () => {
         const inputField = document.querySelector('#chatbox_input input') as HTMLInputElement;
         inputField.value += emoji;
+        this.message = inputField.value;
         inputField.focus();
         emojiPicker.remove();
       });
