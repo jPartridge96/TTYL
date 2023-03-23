@@ -21,7 +21,7 @@ export class ChatComponent {
     }
   }
 
-  userNameUpdate(name: string) {
+  userNameUpdate(name: string):void {
     this.socket = io.io(`localhost:3000?userName=${name}`); // Change to backend IP when hosting publicly
     this.userName = name;
 
@@ -38,16 +38,10 @@ export class ChatComponent {
     });
   }
 
-  sendMessage(): void {
+  sendMessage():void {
     const errorMessage = document.getElementById('chatInput');
     if (!this.message || this.message.trim().length === 0) {
-      if(errorMessage){
-        errorMessage.innerHTML = 'Please enter a message!';
-      }
       return;
-    } else {
-      if(errorMessage)
-      errorMessage.innerText = '';
     }
 
     this.socket.emit('message', this.message);
@@ -61,14 +55,31 @@ export class ChatComponent {
   }
 
 
-  showEmojiPicker() {
+  showEmojiPicker():void {
     const emojiPicker = document.createElement('div');
     emojiPicker.classList.add('emoji-picker');
+    emojiPicker.style.position = 'fixed';
+    emojiPicker.style.bottom = '50px';
+    emojiPicker.style.right = '10px';
+    emojiPicker.style.backgroundColor = 'white';
+    emojiPicker.style.border = '1px solid #ccc';
+    emojiPicker.style.borderRadius = '5px';
+    emojiPicker.style.padding = '10px';
+    emojiPicker.style.display = 'flex';
+    emojiPicker.style.flexWrap = 'wrap';
+    emojiPicker.style.zIndex = '1000';
 
     const emojis = ['😀', '😂', '❤️', '👍', '👎', '🤔'];
     emojis.forEach(emoji => {
       const emojiButton = document.createElement('button');
       emojiButton.innerText = emoji;
+      emojiButton.style.fontSize = "20px";
+      emojiButton.style.padding = "5px";
+      emojiButton.style.margin = "5px";
+      emojiButton.style.border = "none";
+      emojiButton.style.backgroundColor = "transparent";
+      emojiButton.style.cursor = "pointer";
+
       emojiButton.addEventListener('click', () => {
         const inputField = document.querySelector('#chatbox_input input') as HTMLInputElement;
         inputField.value += emoji;
@@ -76,10 +87,8 @@ export class ChatComponent {
         inputField.focus();
         emojiPicker.remove();
       });
-
       emojiPicker.appendChild(emojiButton);
     });
-
     document.body.appendChild(emojiPicker);
   }
 }
