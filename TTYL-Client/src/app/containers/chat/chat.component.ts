@@ -14,9 +14,15 @@ export class ChatComponent {
   socket: any;
 
   constructor() {
+    // Retrieve the message list from session storage
+    const storedMessageList = sessionStorage.getItem('messageList');
+    if (storedMessageList) {
+      this.messageList = JSON.parse(storedMessageList);
+    }
   }
+
   userNameUpdate(name: string) {
-    this.socket = io.io(`25.51.4.75:3000?userName=${name}`);
+    this.socket = io.io(`localhost:3000?userName=${name}`); // Change to backend IP when hosting publicly
     this.userName = name;
 
     this.socket.emit('set-user-name', name);
@@ -32,11 +38,15 @@ export class ChatComponent {
     });
   }
 
-  sendMessage():void {
+  sendMessage(): void {
     this.socket.emit('message', this.message);
-    this.messageList.push({message: this.message, userName: this.userName, isSender: true});
-    this.message = '';
+    this.messageList.push({ message: this.message, userName: this.userName, isSender: true });
 
+    // Save the message list to session storage
+    sessionStorage.setItem('messageList', JSON.stringify(this.messageList));
+
+    this.message = '';
     window.scrollTo(0, document.body.scrollHeight);
   }
+
 }

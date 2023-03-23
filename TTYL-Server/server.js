@@ -59,11 +59,28 @@ io.on('connection', (socket) => {
         const utcTimestamp = new Date().toUTCString();
         const timestamp = new Date(utcTimestamp).toLocaleString('en-US', {hour12: false});
         const formattedTimestamp = timestamp.replace(',', '');
-        const message = { message: msg, userName: userName, timestamp: utcTimestamp };
+
+        if (msg.startsWith('/')) { // Message is a command
+            const cmd = msg.split(' ')[0].substring(1);
+            const args = msg.split(' ').slice(1);
+    
+            switch (cmd) {
+                case 'cmd':
+                    socket.emit('message-broadcast', { message: `${userName} used command: ${cmd}`, userName: 'System', timestamp: utcTimestamp });
+                    console.log(`[${formattedTimestamp}] ${userName}: issued command: ${cmd}`);
+                    logStream.write(`[${formattedTimestamp}] ${userName}: ${msg}\n`);
+                    break;
+                default:
+                    socket.emit('message-broadcast', { message: `Unknown command: ${cmd}`, userName: 'System', timestamp: utcTimestamp });
+                    break;
+            }
+        } else {
+            const message = { message: msg, userName: userName, timestamp: utcTimestamp };
         
-        socket.broadcast.emit('message-broadcast', message);
-        console.log(`[${formattedTimestamp}] ${userName}: ${msg}`);
-        logStream.write(`[${formattedTimestamp}] ${userName}: ${msg}\n`);
+            socket.broadcast.emit('message-broadcast', message);
+            console.log(`[${formattedTimestamp}] ${userName}: ${msg}`);
+            logStream.write(`[${formattedTimestamp}] ${userName}: ${msg}\n`);
+        }
     });
 
     // When User disconnects
