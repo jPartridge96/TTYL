@@ -3,10 +3,10 @@ const express = require('express');
 const cors = require('cors');
 const fs = require('fs'); // File system R/W
 const moment = require('moment-timezone'); // Timezone formatting
+const mysql = require('mysql2');
 
 const app = express();
 const http = require('http').createServer(app);
-
 const io = require('socket.io')(http, {
     cors: {
         origin: "*" // * is a big security flaw - remove for prod
@@ -21,48 +21,32 @@ const SERV_NAME = "TOTYL"
 const SERV_VER = 0.01;
 const SERV_PORT = 3000;
 
+const PROD_VER = false;
+const ENABLE_LOGGING = false;
+
 // Server Logging //
 const logsDir = './logs';
 const fileName = `${logsDir}/totyl_${moment.utc().format('M-DD-YYYY_HH-mm-ss')}.log`;
-
-//connect to mysql //
-
-const mysql = require('mysql2');
-
-//create the connection
-const connection = mysql.createConnection({
-    host: 'localhost', //localhost unless hosted elsewhere
-    user: 'root', //leave as root (the user you sign on with when you connect to server)
-    password: '?', //password for that
-    database: 'TTYLdb' //name the database
-});
-
-//connect to database
-connection.connect((err) => {
-    if(err) {
-        console.log('error connecting to the serve', err);
-        return;
-    }
-
-    console.log('Connected to server', connection.threadId);
-});
 
 if (!fs.existsSync(logsDir)) {
   fs.mkdirSync(logsDir);
 }
 
-try {
-  fs.closeSync(fs.openSync(fileName, 'w'));
-  console.log(`Created log file: ${fileName}`);
-} catch (error) {
-  console.error(`Failed to create log file: ${fileName}. Error: ${error}`);
+if(ENABLE_LOGGING) {
+    try {
+        fs.closeSync(fs.openSync(fileName, 'w'));
+        console.log(`Created log file: ${fileName}`);
+    } catch (error) {
+      console.error(`Failed to create log file: ${fileName}. Error: ${error}`);
+    }
+    const logStream = fs.createWriteStream(fileName, { flags: 'a' });
+    
+    app.get('/', (req, res) => {
+        getServVer().then((ver) => res.send(ver));
+    });
+} else {
+    console.log("Server Logging is disabled - files will not be saved.");
 }
-
-const logStream = fs.createWriteStream(fileName, { flags: 'a' });
-
- app.get('/', (req, res) => {
-    getServVer().then((ver) => res.send(ver));
- });
 
 let userList = new Map();
 
@@ -70,8 +54,7 @@ let userList = new Map();
 io.on('connection', (socket) => {
     let userName = socket.handshake.query.userName;
     addUser(userName, socket.id);
-    console.log(`${userName} has connected. [${socket.id}]`);
-    logStream.write(`${userName} has connected. [${socket.id}]\n`);
+    writeLog(`${userName} has connected. [${socket.id}]`);
 
     socket.broadcast.emit('user-list', [...userList.keys()]);
     socket.emit('user-list', [...userList.keys()]);
@@ -89,8 +72,7 @@ io.on('connection', (socket) => {
             switch (cmd) {
                 case 'cmd':
                     socket.emit('message-broadcast', { message: `${userName} used command: ${cmd}`, userName: 'System', timestamp: utcTimestamp });
-                    console.log(`[${formattedTimestamp}] ${userName}: issued command: ${cmd}`);
-                    logStream.write(`[${formattedTimestamp}] ${userName}: ${msg}\n`);
+                    writeLog(`[${formattedTimestamp}] ${userName}: issued command: ${cmd}`);
                     break;
                 default:
                     socket.emit('message-broadcast', { message: `Unknown command: ${cmd}`, userName: 'System', timestamp: utcTimestamp });
@@ -98,10 +80,8 @@ io.on('connection', (socket) => {
             }
         } else {
             const message = { message: msg, userName: userName, timestamp: utcTimestamp };
-        
             socket.broadcast.emit('message-broadcast', message);
-            console.log(`[${formattedTimestamp}] ${userName}: ${msg}`);
-            logStream.write(`[${formattedTimestamp}] ${userName}: ${msg}\n`);
+            writeLog(`[${formattedTimestamp}] ${userName}: ${msg}`);
         }
     });
 
@@ -110,8 +90,7 @@ io.on('connection', (socket) => {
         delUser(userName, socket.id);
         socket.broadcast.emit('user-list', [...userList.keys()]);
         socket.emit('user-list', [...userList.keys()]);
-        console.log(`${userName} has disconnected (${reason}). [${socket.id}]`);
-        logStream.write(`${userName} has disconnected (${reason}). [${socket.id}]\n`);
+        writeLog(`${userName} has disconnected (${reason}). [${socket.id}]`);
     });
 });
 
@@ -124,21 +103,6 @@ function addUser(userName, id) {
     }
 }
 
-//Add user to server
-function addUsertoServer(name, email, password) {
-    const query = 'INSERT INTO users (name, email, password) VALUES (?, ?, ?)';
-
-    connection.query(query, [name, email, password], (err, result) => {
-        if (err) {
-            console.error('Error inserting data:', err.stack);
-            return;
-        }
-
-        console.log('Data inserted with ID:', result.insertId);
-    });
-}
-addUsertoServer('John Doe', 'john.doe@example.com', 'johns_password');
-
 // Remove user from the chat room
 function delUser(userName, id) {
     if(userList.has(userName)) {
@@ -148,6 +112,18 @@ function delUser(userName, id) {
         }
     }
 }
+
+//Add user to server
+function addUsertoServer(name, email, password) {
+    const query = 'INSERT INTO users (name, email, password) VALUES (?, ?, ?)';
+    connection.query(query, [name, email, password], (err, result) => {
+        if (err) {
+            writeLog('Error inserting data:', err.stack);
+            return;
+        }
+        writeLog('Data inserted with ID:', result.insertId);
+    });
+} // addUsertoServer('John Doe', 'john.doe@example.com', 'johns_password');
 
 // Returns FQSV using commit counts with GitHub API
 // Format: <major>.<minor>.<commit>
@@ -166,19 +142,44 @@ function getServVer() {
     });
 }
 
-// Server launcher
-getServVer().then((build) => {
-    try {
-        console.log(`${build} is starting on port ${SERV_PORT}`);
-        logStream.write(`${build} is starting on port ${SERV_PORT}\n`);
-        http.listen(SERV_PORT, () => {
-            const bootTimeEnd = process.hrtime(bootTimeStart);
-            const bootTimeMs = Math.round((bootTimeEnd[0] * 1000) + (bootTimeEnd[1] / 1000000));
-            console.log(`${build} launched successfully after ${bootTimeMs}ms`);
-            logStream.write(`${build} launched successfully after ${bootTimeMs}ms\n`);
-        });
-    } catch (error) {
-        console.log(`${build} could not be started: ${error}`);
-        logStream.write(`${build} could not be started: ${error}\n`);
+function writeLog(message) {
+    console.log(message);
+    if (ENABLE_LOGGING) {
+        logStream.write(`${message}\n`);
     }
+}
+
+// Create SQL Connection
+const connection = mysql.createConnection({
+    host: 'localhost', //localhost unless hosted elsewhere
+    user: 'root', //leave as root (the user you sign on with when you connect to server)
+    password: '?', //password for that
+    database: 'TTYLdb' //name the database
 });
+
+// Connects to DB - Server starts without DB if not a production version 
+connection.connect((err) => {
+    if(err && PROD_VER) {
+        writeLog(`Error connecting to ${connection.database}: ${err}`);
+        return;
+    } else if(PROD_VER) {
+        writeLog('Connected to server', connection.threadId);
+    }
+    initServer();
+});
+
+// Server Init
+function initServer() {
+    getServVer().then((build) => {
+        try {
+            writeLog(`${build} is starting on port ${SERV_PORT}`);
+            http.listen(SERV_PORT, () => {
+                const bootTimeEnd = process.hrtime(bootTimeStart);
+                const bootTimeMs = Math.round((bootTimeEnd[0] * 1000) + (bootTimeEnd[1] / 1000000));
+                writeLog(`${build} launched successfully after ${bootTimeMs}ms`);
+            });
+        } catch (err) {
+            writeLog(`${build} could not be started: ${err}`);
+        }
+    });
+}
