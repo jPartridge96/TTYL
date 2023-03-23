@@ -23,6 +23,11 @@ export class UsernameComponent {
   }
 
   setUserName() {
+    //Check to see if username is null or blank and if it is force user add
+    if(!this.userName || this.userName.trim().length  ===0) {
+      alert('Please enter a valid username!');
+      return;
+    }
     this.userNameEvent.emit(this.userName);
     $('#loginModal').modal('hide');
   }
