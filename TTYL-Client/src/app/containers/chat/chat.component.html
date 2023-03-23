@@ -21,6 +21,7 @@
   </div>
   <div id="chatbox_input" class="chatbox_input">
     <input type="text" [(ngModel)]="message" (keyup.enter)="sendMessage()">
+    <button (click)="showEmojiPicker()">😀</button>
     <button (click)="sendMessage()">Send</button>
   </div>
 </div>

@@ -49,4 +49,24 @@ export class ChatComponent {
     window.scrollTo(0, document.body.scrollHeight);
   }
 
+  showEmojiPicker() {
+    const emojiPicker = document.createElement('div');
+    emojiPicker.classList.add('emoji-picker');
+
+    const emojis = ['😀', '😂', '❤️', '👍', '👎', '🤔'];
+    emojis.forEach(emoji => {
+      const emojiButton = document.createElement('button');
+      emojiButton.innerText = emoji;
+      emojiButton.addEventListener('click', () => {
+        const inputField = document.querySelector('#chatbox_input input') as HTMLInputElement;
+        inputField.value += emoji;
+        inputField.focus();
+        emojiPicker.remove();
+      });
+
+      emojiPicker.appendChild(emojiButton);
+    });
+
+    document.body.appendChild(emojiPicker);
+  }
 }
