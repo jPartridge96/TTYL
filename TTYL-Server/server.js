@@ -4,6 +4,7 @@ const cors = require('cors');
 const fs = require('fs'); // File system R/W
 const moment = require('moment-timezone'); // Timezone formatting
 const mysql = require('mysql2');
+const twilio = require('twilio');
 
 const app = express();
 const http = require('http').createServer(app);
@@ -23,6 +24,10 @@ const SERV_PORT = 3000;
 
 const PROD_VER = false;
 const ENABLE_LOGGING = false;
+
+const accountSid = 'AC200ae19775668a02581d2922c8f10c2c'; // Your Account SID from www.twilio.com/console
+const authToken = 'b332aab042d32eccdb5f57cae6a94751'; // Your Auth Token from www.twilio.com/console
+const client = require('twilio')(accountSid, authToken);
 
 // Server Logging //
 const logsDir = './logs';
@@ -70,8 +75,9 @@ io.on('connection', (socket) => {
             const args = msg.split(' ').slice(1);
     
             switch (cmd) {
-                case 'cmd':
+                case 'otpTest':
                     socket.emit('message-broadcast', { message: `${userName} used command: ${cmd}`, userName: 'System', timestamp: utcTimestamp });
+                    verifyOTP(args[0], args[1], args[2]);
                     writeLog(`[${formattedTimestamp}] ${userName}: issued command: ${cmd}`);
                     break;
                 default:
@@ -111,6 +117,15 @@ function delUser(userName, id) {
             userList.delete(userName);
         }
     }
+}
+
+function verifyOTP(countryCode, areaCode, phoneNumber) {
+    let phNum = `${countryCode}${areaCode}${phoneNumber}`;
+
+    client.verify.v2.services('VAed9757f03ec134ff7530922865dd1ec0')
+    .verifications
+    .create({to: phNum, channel: 'sms'})
+    .then(verification => writeLog(verification.status));
 }
 
 //Add user to server
