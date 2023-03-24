@@ -5,12 +5,13 @@ const fs = require('fs'); // File system R/W
 const moment = require('moment-timezone'); // Timezone formatting
 const mysql = require('mysql2');
 const twilio = require('twilio');
+require('dotenv').config({ path: '.env.local' });
 
 const app = express();
 const http = require('http').createServer(app);
 const io = require('socket.io')(http, {
     cors: {
-        origin: "*" // * is a big security flaw - remove for prod
+        origin: process.env.corsOrigin // * is a big security flaw - remove for prod
     }
 });
 
@@ -25,9 +26,7 @@ const SERV_PORT = 3000;
 const PROD_VER = false;
 const ENABLE_LOGGING = false;
 
-const accountSid = 'AC200ae19775668a02581d2922c8f10c2c'; // Your Account SID from www.twilio.com/console
-const authToken = 'b332aab042d32eccdb5f57cae6a94751'; // Your Auth Token from www.twilio.com/console
-const client = require('twilio')(accountSid, authToken);
+const client = require('twilio')(process.env.twilioAccSid, process.env.twilioAuth);
 
 // Server Logging //
 const logsDir = './logs';
@@ -75,9 +74,26 @@ io.on('connection', (socket) => {
             const args = msg.split(' ').slice(1);
     
             switch (cmd) {
-                case 'otpTest':
-                    socket.emit('message-broadcast', { message: `${userName} used command: ${cmd}`, userName: 'System', timestamp: utcTimestamp });
-                    verifyOTP(args[0], args[1], args[2]);
+                case 'otpSend':
+                    switch (args.length) {
+                        case 3: // Verification Code
+                            socket.emit('message-broadcast', { message: `A verification code has been sent to '${args[0]} (${args[1]}) ${args[2]}.`, userName: 'System', timestamp: utcTimestamp });
+                            verifyOTP(args[0], args[1], args[2]);
+                            break;
+                        default:
+                            socket.emit('message-broadcast', { message: `Incorrect command usage. Please check syntax and try again.`, userName: 'System', timestamp: utcTimestamp });
+                            break;
+                    }
+                    break;
+                case 'otpVerify':
+                    switch (args.length) {
+                        case 1: // Phone Number
+                            socket.emit('message-broadcast', { message: `The verification code you have entered is incorrect.`, userName: 'System', timestamp: utcTimestamp });
+                            break;
+                        default:
+                            socket.emit('message-broadcast', { message: `Incorrect command usage. Please check syntax and try again.`, userName: 'System', timestamp: utcTimestamp });
+                            break;
+                    }
                     writeLog(`[${formattedTimestamp}] ${userName}: issued command: ${cmd}`);
                     break;
                 default:
@@ -122,7 +138,7 @@ function delUser(userName, id) {
 function verifyOTP(countryCode, areaCode, phoneNumber) {
     let phNum = `${countryCode}${areaCode}${phoneNumber}`;
 
-    client.verify.v2.services('VAed9757f03ec134ff7530922865dd1ec0')
+    client.verify.v2.services(process.env.twilioServSid)
     .verifications
     .create({to: phNum, channel: 'sms'})
     .then(verification => writeLog(verification.status));
@@ -143,7 +159,7 @@ function addUsertoServer(name, email, password) {
 // Returns FQSV using commit counts with GitHub API
 // Format: <major>.<minor>.<commit>
 function getServVer() {
-    const token = "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";
+    const token = process.env.gitToken;
     const url = `https://api.github.com/repos/jPartridge96/TTYL/commits`;
 
     return fetch(url, {
@@ -166,10 +182,10 @@ function writeLog(message) {
 
 // Create SQL Connection
 const connection = mysql.createConnection({
-    host: 'localhost', //localhost unless hosted elsewhere
-    user: 'root', //leave as root (the user you sign on with when you connect to server)
-    password: '?', //password for that
-    database: 'TTYLdb' //name the database
+    host: process.env.sqlHost, //localhost unless hosted elsewhere
+    user: process.env.sqlUser, //leave as root (the user you sign on with when you connect to server)
+    password: process.env.sqlPass, //password for that
+    database: process.env.sqlData //name the database
 });
 
 // Connects to DB - Server starts without DB if not a production version 
