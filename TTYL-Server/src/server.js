@@ -196,14 +196,11 @@ async function startServer() {
         } catch (err) {
             writeLog(`${build} could not be started: ${err}`);
         }
+    }).then(() => {
+        db.initDb();
     });
-
-    db.query(`USE ttyldb;
-        CREATE TABLE accounts (
-            id INT NOT NULL AUTO_INCREMENT,
-            username VARCHAR(50) NOT NULL,
-            password VARCHAR(255) NOT NULL,
-            PRIMARY KEY (id)
-        );`);
+    
 }
+
+
 startServer();
