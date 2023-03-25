@@ -26,6 +26,7 @@ const SERV_PORT = 3000;
 
 const PROD_VER = false;
 const ENABLE_LOGGING = false;
+const CREATE_DATABASE = true;
 
 const client = require('twilio')(process.env.twilioAccSid, process.env.twilioAuth);
 
@@ -197,9 +198,11 @@ async function startServer() {
             writeLog(`${build} could not be started: ${err}`);
         }
     }).then(() => {
-        db.initDb();
+        if(CREATE_DATABASE) {
+            writeLog(`CREATE_DATABASE set to true - Initializing databases`);
+            db.initDb();
+        }
     });
-    
 }
 
 

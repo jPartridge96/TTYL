@@ -16,7 +16,7 @@ class Database {
                     database: process.env.sqlData
                 }).then(connection => {
                     this.connection = connection;
-                    writeLog(`Connected to ${process.env.sqlData}`);
+                    writeLog(`A connection to '${process.env.sqlData}' has been established`);
                 }).catch(err => {
                     writeLog(`Unable to connect to DB: ${err}`);
                 });
@@ -34,13 +34,7 @@ class Database {
      */
     async query(sql, params) {
         try {
-            return await this.connection.query(sql, params, (err, result) => {
-                if (err) {
-                    writeLog('Error querying data:', err.stack);
-                    return;
-                }
-                writeLog('Data inserted with ID:', result.insertId);
-            });
+            return await this.connection.query(sql, params);
         } catch (err) {
             console.error('Error executing query:', err);
             return null;
@@ -48,22 +42,51 @@ class Database {
     }
 
     async initDb() {
-        await this.query(`CREATE TABLE IF NOT EXISTS accounts (
-            id INT NOT NULL AUTO_INCREMENT,
-            username VARCHAR(50) NOT NULL,
-            password VARCHAR(255) NOT NULL,
-            PRIMARY KEY (id)
-          );`).then(() => {
-            this.query(`CREATE TABLE IF NOT EXISTS users (
+      await this.query(`CREATE TABLE IF NOT EXISTS profiles (
                 id INT NOT NULL AUTO_INCREMENT,
-                username VARCHAR(50) NOT NULL,
-                password VARCHAR(255) NOT NULL,
+                nickname VARCHAR(50) NOT NULL,
+                avatar LONGBLOB,
                 PRIMARY KEY (id)
-              );`)
-            }).then(() => {
-            this.writeLog(`Database '${process.env.sqlData}' has been successfully configured.`);
-          });
-    }
+            );`).then(() => {
+            this.query(`CREATE TABLE IF NOT EXISTS accounts (
+                id INT NOT NULL AUTO_INCREMENT,
+                phone VARCHAR(20) NOT NULL,
+                first_name VARCHAR(50) NOT NULL,
+                last_name VARCHAR(50) NOT NULL,
+                dob DATE NOT NULL,
+                p_id INT NOT NULL,
+                PRIMARY KEY (id),
+                FOREIGN KEY (p_id) REFERENCES profiles(id)
+            );`).then(() => {
+            this.query(`CREATE TABLE IF NOT EXISTS connections (
+                id INT NOT NULL AUTO_INCREMENT,
+                p_1 INT NOT NULL,
+                p_2 INT NOT NULL,
+                p_1_confirm BOOLEAN NOT NULL DEFAULT FALSE,
+                p_2_confirm BOOLEAN NOT NULL DEFAULT FALSE,
+                PRIMARY KEY (id),
+                FOREIGN KEY (p_1) REFERENCES profiles(id),
+                FOREIGN KEY (p_2) REFERENCES profiles(id)
+            );`).then(() => {
+            this.query(`CREATE TABLE IF NOT EXISTS messages (
+                id INT NOT NULL AUTO_INCREMENT,
+                message VARCHAR(500) NOT NULL,
+                timestamp DATETIME NOT NULL,
+                sender_id INT NOT NULL,
+                PRIMARY KEY (id),
+                FOREIGN KEY (sender_id) REFERENCES profiles(id)
+            );`).then(() => {
+            this.query(`CREATE TABLE IF NOT EXISTS conversations (
+                id INT NOT NULL AUTO_INCREMENT,
+                p_1 INT NOT NULL,
+                p_2 INT NOT NULL,
+                message_list JSON,
+                PRIMARY KEY (id),
+                FOREIGN KEY (p_1) REFERENCES profiles(id),
+                FOREIGN KEY (p_2) REFERENCES profiles(id)
+              );`).then(() => {
+                this.writeLog(`Database and tables have been successfully created.`);
+              })})})})})}
 }
 
 module.exports = Database;
