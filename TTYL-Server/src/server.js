@@ -3,10 +3,9 @@ const express = require('express');
 const cors = require('cors');
 const fs = require('fs'); // File system R/W
 const moment = require('moment-timezone'); // Timezone formatting
-const twilio = require('twilio');
 const Database = require('./services/database');
-const { query } = require('express');
 require('dotenv').config({ path: '.env.local' });
+const { sendOTP, verifyOTP } = require('./services/otp');
 
 const app = express();
 const http = require('http').createServer(app);
@@ -26,9 +25,7 @@ const SERV_PORT = 3000;
 
 const PROD_VER = false;
 const ENABLE_LOGGING = false;
-const CREATE_DATABASE = true;
-
-const client = require('twilio')(process.env.twilioAccSid, process.env.twilioAuth);
+const CREATE_DATABASE = false;
 
 // Server Logging //
 const logsDir = './logs';
@@ -78,25 +75,48 @@ io.on('connection', (socket) => {
             switch (cmd) {
                 case 'otpSend':
                     switch (args.length) {
-                        case 3: // Verification Code
-                            socket.emit('message-broadcast', { message: `A verification code has been sent to '${args[0]} (${args[1]}) ${args[2]}.`, userName: 'System', timestamp: utcTimestamp });
-                            verifyOTP(args[0], args[1], args[2]);
+                        case 3: // countryCode, areaCode, phoneNumber
+                            sendOTP(args[0], args[1], args[2])
+                                .then(sid => {
+                                socket.emit('message-broadcast', { message: `A verification code has been sent to '${args[0]} (${args[1]}) ${args[2]}'.`, userName: 'System', timestamp: utcTimestamp });
+                                socket.otpSid = sid;
+                                socket.phNum = `${args[0]}${args[1]}${args[2]}`; // store the verification sid in the socket
+                                })
+                                .catch(error => {
+                                console.error(error);
+                                socket.emit('message-broadcast', { message: 'Failed to send OTP. Please try again later.', userName: 'System', timestamp: utcTimestamp });
+                                });
                             break;
                         default:
-                            socket.emit('message-broadcast', { message: `Incorrect command usage. Please check syntax and try again.`, userName: 'System', timestamp: utcTimestamp });
+                            socket.emit('message-broadcast', { message: 'Incorrect command usage. Usage: /otpSend countryCode areaCode phoneNumber', userName: 'System', timestamp: utcTimestamp });
                             break;
                     }
                     break;
                 case 'otpVerify':
                     switch (args.length) {
-                        case 1: // Phone Number
-                            socket.emit('message-broadcast', { message: `The verification code you have entered is incorrect.`, userName: 'System', timestamp: utcTimestamp });
+                        case 1: // verification code
+                            if (socket.otpSid && socket.phNum) {
+                                verifyOTP(socket.phNum, args[0])
+                                    .then(approved => {
+                                        if (approved) {
+                                            socket.emit('message-broadcast', { message: 'OTP verification succeeded.', userName: 'System', timestamp: utcTimestamp });
+                                            socket.otpSid = null;
+                                        } else {
+                                            socket.emit('message-broadcast', { message: 'OTP verification failed. Please check your code and try again.', userName: 'System', timestamp: utcTimestamp });
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error(error);
+                                        socket.emit('message-broadcast', { message: 'Failed to verify OTP. Please try again later.', userName: 'System', timestamp: utcTimestamp });
+                                    });
+                            } else {
+                                socket.emit('message-broadcast', { message: 'No OTP verification in progress.', userName: 'System', timestamp: utcTimestamp });
+                            }
                             break;
                         default:
-                            socket.emit('message-broadcast', { message: `Incorrect command usage. Please check syntax and try again.`, userName: 'System', timestamp: utcTimestamp });
+                            socket.emit('message-broadcast', { message: 'Incorrect command usage. Usage: /otpVerify code', userName: 'System', timestamp: utcTimestamp });
                             break;
                     }
-                    writeLog(`[${formattedTimestamp}] ${userName}: issued command: ${cmd}`);
                     break;
                 default:
                     socket.emit('message-broadcast', { message: `Unknown command: ${cmd}`, userName: 'System', timestamp: utcTimestamp });
@@ -136,27 +156,6 @@ function delUser(userName, id) {
         }
     }
 }
-
-function verifyOTP(countryCode, areaCode, phoneNumber) {
-    let phNum = `${countryCode}${areaCode}${phoneNumber}`;
-
-    client.verify.v2.services(process.env.twilioServSid)
-    .verifications
-    .create({to: phNum, channel: 'sms'})
-    .then(verification => writeLog(verification.status));
-}
-
-//Add user to server
-function addUsertoServer(name, email, password) {
-    const query = 'INSERT INTO users (name, email, password) VALUES (?, ?, ?)';
-    connection.query(query, [name, email, password], (err, result) => {
-        if (err) {
-            writeLog('Error inserting data:', err.stack);
-            return;
-        }
-        writeLog('Data inserted with ID:', result.insertId);
-    });
-} // addUsertoServer('John Doe', 'john.doe@example.com', 'johns_password');
 
 // Returns FQSV using commit counts with GitHub API
 // Format: <major>.<minor>.<commit>
@@ -204,6 +203,4 @@ async function startServer() {
         }
     });
 }
-
-
 startServer();
