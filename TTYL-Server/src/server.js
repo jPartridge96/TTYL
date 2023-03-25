@@ -3,8 +3,9 @@ const express = require('express');
 const cors = require('cors');
 const fs = require('fs'); // File system R/W
 const moment = require('moment-timezone'); // Timezone formatting
-const mysql = require('mysql2');
 const twilio = require('twilio');
+const Database = require('./services/database');
+const { query } = require('express');
 require('dotenv').config({ path: '.env.local' });
 
 const app = express();
@@ -180,27 +181,10 @@ function writeLog(message) {
     }
 }
 
-// Create SQL Connection
-const connection = mysql.createConnection({
-    host: process.env.sqlHost, //localhost unless hosted elsewhere
-    user: process.env.sqlUser, //leave as root (the user you sign on with when you connect to server)
-    password: process.env.sqlPass, //password for that
-    database: process.env.sqlData //name the database
-});
-
-// Connects to DB - Server starts without DB if not a production version 
-connection.connect((err) => {
-    if(err && PROD_VER) {
-        writeLog(`Error connecting to ${connection.database}: ${err}`);
-        return;
-    } else if(PROD_VER) {
-        writeLog('Connected to server', connection.threadId);
-    }
-    initServer();
-});
-
 // Server Init
-function initServer() {
+async function startServer() {
+    const db = new Database(writeLog);
+    
     getServVer().then((build) => {
         try {
             writeLog(`${build} is starting on port ${SERV_PORT}`);
@@ -213,4 +197,13 @@ function initServer() {
             writeLog(`${build} could not be started: ${err}`);
         }
     });
+
+    db.query(`USE ttyldb;
+        CREATE TABLE accounts (
+            id INT NOT NULL AUTO_INCREMENT,
+            username VARCHAR(50) NOT NULL,
+            password VARCHAR(255) NOT NULL,
+            PRIMARY KEY (id)
+        );`);
 }
+startServer();
