@@ -7,7 +7,6 @@ import { AppComponent } from './app.component';
 import { ChatComponent } from './containers/chat/chat.component';
 import { UsernameComponent } from './components/username/username.component';
 import { AboutComponent } from './containers/about/about.component';
-import { LoginComponent } from './containers/login/login.component';
 import { AuthenticateComponent } from './containers/authenticate/authenticate.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { AccountComponent } from './containers/account/account.component';
@@ -20,7 +19,6 @@ import { FooterComponent } from './components/footer/footer.component';
     ChatComponent,
     UsernameComponent,
     AboutComponent,
-    LoginComponent,
     AuthenticateComponent,
     NavbarComponent,
     AccountComponent,

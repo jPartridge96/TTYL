@@ -1,20 +1,3 @@
-// Required Imports //
-const express = require('express');
-const cors = require('cors');
-const fs = require('fs'); // File system R/W
-const moment = require('moment-timezone'); // Timezone formatting
-const Database = require('./services/database');
-require('dotenv').config({ path: '.env.local' });
-const { sendOTP, verifyOTP } = require('./services/otp');
-
-const app = express();
-const http = require('http').createServer(app);
-const io = require('socket.io')(http, {
-    cors: {
-        origin: process.env.corsOrigin // * is a big security flaw - remove for prod
-    }
-});
-
 // Compile-time Monitoring //
 const bootTimeStart = process.hrtime();
 
@@ -26,6 +9,26 @@ const SERV_PORT = 3000;
 const PROD_VER = false;
 const ENABLE_LOGGING = false;
 const CREATE_DATABASE = false;
+
+// Required Imports //
+const express = require('express');
+const cors = require('cors');
+const fs = require('fs'); // File system R/W
+const moment = require('moment-timezone'); // Timezone formatting
+require('dotenv').config({ path: '.env.local' });
+
+const Database = require('./services/database');
+const { sendOTP, verifyOTP } = require('./services/otp');
+
+const app = express();
+const http = require('http').createServer(app);
+const io = require('socket.io')(http, {
+    cors: {
+        origin: process.env.corsOrigin // * is a big security flaw - remove for prod
+    }
+});
+
+
 
 // Server Logging //
 const logsDir = './logs';
