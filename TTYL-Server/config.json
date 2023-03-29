@@ -1,0 +1,18 @@
+{
+    "app": {
+        "name": "TOTYL",
+        "description": "A lightweight & secure social messaging app",
+        "version": "0.01",
+        "authors": [
+            "Jordan Partridge",
+            "Thomas Heal"
+        ],
+        "company": "Group One"
+    },
+    "server": {
+        "logging": false,
+        "create_database": false,
+        "port": 3000,
+        "production": false
+    }
+}

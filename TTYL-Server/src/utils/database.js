@@ -1,12 +1,14 @@
 const mysql = require('mysql2/promise');
+const { writeLog } = require('./logger');
 
 /**
  * Initializes the Database service with connection variables stored in the local environment
  */
 class Database {
-    constructor(writeLog) {
-        this.writeLog = writeLog;
-
+    /**
+     * Creates a new Database instance
+     */
+    constructor() {
         try {
             if (process.env.sqlPass) {
                 mysql.createConnection({
@@ -25,7 +27,6 @@ class Database {
             writeLog(`Unable to connect to DB: ${err}`);
         }
     }
-
     /**
      * Executes the SQL query with the specified parameters
      * @param {string} sql The SQL query to be executed
@@ -41,7 +42,10 @@ class Database {
         }
     }
 
-    async initDb() {
+    /**
+     * Creates the database and tables if they do not exist
+     */
+    async initTables() {
       await this.query(`CREATE TABLE IF NOT EXISTS profiles (
                 id INT NOT NULL AUTO_INCREMENT,
                 nickname VARCHAR(50) NOT NULL,
@@ -85,7 +89,7 @@ class Database {
                 FOREIGN KEY (p_1) REFERENCES profiles(id),
                 FOREIGN KEY (p_2) REFERENCES profiles(id)
               );`).then(() => {
-                this.writeLog(`Database and tables have been successfully created.`);
+                writeLog(`Database and tables have been successfully created.`);
               })})})})})}
 }
 
