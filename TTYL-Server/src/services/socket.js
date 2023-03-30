@@ -24,6 +24,13 @@ function setupSocket(io) {
             socket.emit('user-list', [...userList.keys()]);
             writeLog(`${userName} has disconnected (${reason}). [${socket.id}]`);
         });
+
+        socket.on('get-date', () => {
+            const utcTimestamp = new Date().toUTCString();
+            const timestamp = new Date(utcTimestamp).toLocaleString('en-US', {hour12: false});
+            const formattedTimestamp = timestamp.replace(',', '');
+            socket.emit('date', formattedTimestamp);
+        });
     });
 }
 
