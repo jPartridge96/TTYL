@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import * as io from "socket.io-client";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import * as io from 'socket.io-client';
 
 @Component({
   selector: 'app-chat',
@@ -7,6 +8,15 @@ import * as io from "socket.io-client";
   styleUrls: ['./chat.component.css']
 })
 export class ChatComponent {
+  get currentChatUser(): string {
+    return this._currentChatUser;
+  }
+
+  set currentChatUser(username: string) {
+    this._currentChatUser = username;
+  }
+  private _currentChatUser = "";
+
   userName = "";
   message = "";
   messageList: {message: string, userName: string, isSender: boolean}[] = [];
@@ -21,6 +31,8 @@ export class ChatComponent {
     }
   }
 
+
+
   userNameUpdate(name: string):void {
     this.socket = io.io(`localhost:3000?userName=${name}`); // Change to backend IP when hosting publicly
     this.userName = name;
@@ -33,19 +45,35 @@ export class ChatComponent {
 
     this.socket.on('message-broadcast', (data: {message: string, userName: string}) => {
       if(data) {
-        this.messageList.push({message: data.message, userName: data.userName, isSender: false});
+        const isSender = data.userName === this.userName;
+        this.messageList.push({message: data.message, userName: data.userName, isSender: isSender});
       }
     });
+
+    this.currentChatUser = name;
   }
 
-  sendMessage():void {
+  sendMessage(chatUser: string):void {
+    if (!this.currentChatUser) {
+      console.error('Current chat user has not been set');
+      return;
+    }
     const errorMessage = document.getElementById('chatInput');
     if (!this.message || this.message.trim().length === 0) {
       return;
     }
 
+    // Check if the message is from the current user
+    const isSender = this.userName === chatUser;
+
     this.socket.emit('message', this.message);
-    this.messageList.push({ message: this.message, userName: this.userName, isSender: true });
+
+    // Only push the message as a my-message if it's from the current user
+    if (isSender) {
+      this.messageList.push({ message: this.message, userName: this.userName, isSender: true });
+    } else {
+      this.messageList.push({ message: this.message, userName: chatUser, isSender: false });
+    }
 
     // Save the message list to session storage
     sessionStorage.setItem('messageList', JSON.stringify(this.messageList));

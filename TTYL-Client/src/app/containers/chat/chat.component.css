@@ -217,40 +217,40 @@ body{
     overflow-x: auto;
     background: #fff;
     left: -400px;
-    display: none
+    display: none;
   }
   .chat-app .people-list.open {
-    left: 0
+    left: 0;
   }
   .chat-app .chat {
-    margin: 0
+    margin: 0;
   }
   .chat-app .chat .chat-header {
-    border-radius: 0.55rem 0.55rem 0 0
+    border-radius: 0.55rem 0.55rem 0 0;
   }
   .chat-app .chat-history {
     height: 300px;
-    overflow-x: auto
+    overflow-x: auto;
   }
 }
 
 @media only screen and (min-width: 768px) and (max-width: 992px) {
   .chat-app .chat-list {
     height: 650px;
-    overflow-x: auto
+    overflow-x: auto;
   }
   .chat-app .chat-history {
     height: 600px;
-    overflow-x: auto
+    overflow-x: auto;
   }
 }
 
 @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
   .chat-app .chat-list {
     height: 480px;
-    overflow-x: auto
+    overflow-x: auto;
   }
-   .chat-history {
+  .chat-history {
     height: 400px;
     overflow-y: auto;
   }
@@ -272,3 +272,29 @@ body{
   float: left;
 }
 
+.other-message {
+  background-color: #e8f1f3;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+  clear: both;
+  float: right;
+}
+
+.message-data-time {
+  color: #434651;
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+
+.message-data-time .username {
+  font-weight: bold;
+}
+
+.other-message .message-data-time {
+  text-align: right;
+}
+
+.my-message .message-data-time {
+  text-align: left;
+}

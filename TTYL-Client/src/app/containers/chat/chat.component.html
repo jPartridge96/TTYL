@@ -1,74 +1,72 @@
-
 <div class="container" style="background-color: #434651">
-    <app-username (userNameEvent)="userNameUpdate($event)" *ngIf="!userName"></app-username>
-    <h1>TOTYL - Chat</h1>
+  <app-username (userNameEvent)="userNameUpdate($event)" *ngIf="!userName"></app-username>
+  <h1>TOTYL - Chat</h1>
 
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
 
-    <div class="container">
-      <div class="row clearfix">
-        <div class="col-lg-12">
-          <div class="card chat-app">
-            <div id="plist" class="people-list">
-              <div class="input-group">
-                <div class="input-group-prepend">
-                  <span class="input-group-text"><i class="fa fa-search"></i></span>
-                </div>
-                <input type="text" class="form-control" placeholder="Search...">
+
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+
+  <div class="container">
+    <div class="row clearfix">
+      <div class="col-lg-12">
+        <div class="card chat-app">
+          <div id="plist" class="people-list">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text"><i class="fa fa-search"></i></span>
               </div>
-              <ul class="list-unstyled chat-list mt-2 mb-0">
-                <li class="clearfix" *ngFor="let username of userList">
-                  <div class="about">
-                    <div class="name">{{username}}</div>
+              <input type="text" class="form-control" placeholder="Search...">
+            </div>
+            <ul class="list-unstyled chat-list mt-2 mb-0">
+              <li class="clearfix" *ngFor="let username of userList">
+                <div class="about">
+                  <div class="name" (click)="currentChatUser = username">{{username}}</div>
+                </div>
+              </li>
+
+            </ul>
+          </div>
+          <div class="chat">
+            <div class="chat-header clearfix">
+              <div class="row">
+                <div class="col-lg-6">
+                  <a href="javascript:void(0);" data-toggle="modal" data-target="#view_info">
+                    <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="avatar">
+                  </a>
+                  <div class="chat-about">
+                    <h6 class="m-b-0">{{currentChatUser}}</h6>
+                    <small>Last seen: 2 hours ago</small>
+                  </div>
+                </div>
+                <div class="col-lg-6 hidden-sm text-right">
+                  <a href="javascript:void(0);" class="btn btn-outline-secondary"><i class="fa fa-camera"></i></a>
+                  <a href="javascript:void(0);" class="btn btn-outline-primary"><i class="fa fa-image"></i></a>
+                  <a href="javascript:void(0);" class="btn btn-outline-info"><i class="fa fa-cogs"></i></a>
+                  <a href="javascript:void(0);" class="btn btn-outline-warning"><i class="fa fa-question"></i></a>
+                </div>
+              </div>
+            </div>
+            <div class="chat-history">
+              <ul class="m-b-0">
+                <li class="clearfix" *ngFor="let msg of messageList">
+                  <div class="message-data" [ngClass]="{'text-right': !msg.isSender, 'text-left': msg.isSender}">
+                    <div class="message-data-time" [ngClass]="{'float-right': !msg.isSender, 'float-left': msg.isSender}">
+                      <span class="username">{{msg.userName}}</span>
+                    </div>
+                    <div class="message" [ngClass]="{'other-message': !msg.isSender, 'my-message': msg.isSender}">
+                      {{msg.message}}
+                    </div>
                   </div>
                 </li>
               </ul>
             </div>
-            <div class="chat">
-              <div class="chat-header clearfix">
-                <div class="row">
-                  <div class="col-lg-6">
-                    <a href="javascript:void(0);" data-toggle="modal" data-target="#view_info">
-                      <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="avatar">
-                    </a>
-                    <div class="chat-about">
-                      <h6 class="m-b-0">Aiden Chavez</h6>
-                      <small>Last seen: 2 hours ago</small>
-                    </div>
-                  </div>
-                  <div class="col-lg-6 hidden-sm text-right">
-                    <a href="javascript:void(0);" class="btn btn-outline-secondary"><i class="fa fa-camera"></i></a>
-                    <a href="javascript:void(0);" class="btn btn-outline-primary"><i class="fa fa-image"></i></a>
-                    <a href="javascript:void(0);" class="btn btn-outline-info"><i class="fa fa-cogs"></i></a>
-                    <a href="javascript:void(0);" class="btn btn-outline-warning"><i class="fa fa-question"></i></a>
-                  </div>
+            <div class="chat-message clearfix">
+              <div class="input-group mb-0">
+                <div class="input-group-prepend">
                 </div>
-              </div>
-              <div class="chat-history" >
-                <ul class="m-b-0">
-                  <li class="clearfix">
-                    <div class="message-data text-right" >
-                    </div>
-                    <div class="message other-message float-right" >
-                    </div>
-                  </li>
-                  <li class="clearfix">
-                    <div class="message-data" *ngFor="let msg of messageList" [ngClass]="{isSender: msg.isSender}">
-                      <div class="message my-message">
-                        <p><strong>{{msg.userName}}</strong></p>
-                        <p>{{msg.message}}</p>
-                      </div>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-              <div class="chat-message clearfix">
-                <div class="input-group mb-0">
-                  <div class="input-group-prepend">
-                  </div>
-                  <input type="text" class="form-control" placeholder="Enter text here..." [(ngModel)]="message" (keyup.enter)="sendMessage()">
+                <input type="text" class="form-control" placeholder="Enter text here..." [(ngModel)]="message" (keyup.enter)="sendMessage(currentChatUser)" />
                   <button class="btn btn-outline-dark" (click)="showEmojiPicker()">😀</button>
-                  <button class="btn btn-outline-dark" (click)="sendMessage()">Send</button>
+                  <button class="btn btn-outline-dark" (click)="sendMessage(currentChatUser)">Send</button>
                 </div>
               </div>
             </div>
