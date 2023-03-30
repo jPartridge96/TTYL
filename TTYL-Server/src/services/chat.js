@@ -16,7 +16,7 @@ function onMessageReceived(socket, userName, msg) {
         CommandHandler(socket, msg, utcTimestamp);
     else {
         socket.broadcast.emit('message-broadcast', { message: msg, userName: userName, timestamp: formattedTimestamp });
-        socket.emit('message-broadcast', { message: msg, userName: userName, timestamp: formattedTimestamp });
+        // socket.emit('message-broadcast', { message: msg, userName: userName, timestamp: formattedTimestamp });
         writeLog(`[${formattedTimestamp}] ${userName}: ${msg}`);
     }
 }
