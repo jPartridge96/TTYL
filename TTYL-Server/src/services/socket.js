@@ -29,7 +29,7 @@ function setupSocket(io) {
         socket.on('verify-otp', (code) => verifyOtp(socket.phNum, code)
         .then(isVerified => {
             if (isVerified) {
-                socket.emit('otp-verified', 'app-account');
+                socket.emit('otp-verified', false); // replace 'false' with bool check if account exists
                 writeLog(`OTP verified for ${socket.phNum}`);
 
                 socket.otpSid = null;

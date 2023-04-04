@@ -23,7 +23,6 @@ sentVerification: boolean = false;
 
   constructor(private router: Router) {}
 
-
   btnSendCode_click(event: any) {
     if(this.socket == null) {
       this.socket = io.io(`localhost:3000`);
@@ -73,11 +72,11 @@ sentVerification: boolean = false;
     }, 1000);
 
 
-    this.socket.on('otp-verified', (component: string) => {
-      if (component) {
-        // @ts-ignore
-        document.getElementById('currentComponent').innerHTML = `<${component}></${component}>`;
-        console.log('OTP Verified!');
+    this.socket.on('otp-verified', (accountExists: boolean) => {
+      if (accountExists) {
+        this.router.navigate(['/messages']);
+      } else {
+        this.router.navigate(['/create-account']);
       }
     });
 
