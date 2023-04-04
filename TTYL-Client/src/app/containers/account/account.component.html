@@ -1,24 +1,23 @@
 <div class="h-100 vh-100 d-flex align-items-center justify-content-center">
   <div>
-    <div class="row mb-5">
-      <img src="../../../assets/img/totyl.png"/>
+    <app-header></app-header>
+
+    <div class="row mb-2">
+        <input type="text" id="txtFirstName" class="text-border-bottom text-white" placeholder="First Name" minlength="2" (input)="txtFirstName_input($event)">
     </div>
 
     <div class="row mb-2">
-        <input type="text" class="text-border-bottom text-white" placeholder="First Name">
+        <input type="text" id="txtLastName" class="text-border-bottom text-white" placeholder="Last Name" minlength="2" (input)="txtLastName_input($event)">
     </div>
 
     <div class="row mb-2">
-        <input type="text" class="text-border-bottom text-white" placeholder="Last Name">
-    </div>
-
-    <div class="row mb-2">
-        <input type="date" class="text-border-bottom text-white" placeholder="Date of Birth">
+        <input type="date" id="dtpDateOfBirth" class="text-border-bottom text-white mb-2" placeholder="Date of Birth" (input)="dtpDateOfBirth_input($event)">
+        <h6 class="small text-muted">Users must be 13 years of age or older to use TOTYL</h6>
     </div>
 
     <div class="row">
       <div class="col">
-        <button class="btn text-white btn-sm m-2 float-end" style="background-color: #454545">Next</button>
+        <button class="btn text-white btn-sm m-2 float-end" style="background-color: #454545" [disabled]="!isFormValid" (click)="btnNext_click()">Next</button>
       </div>
     </div>
 
