@@ -12,7 +12,8 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 import { AccountComponent } from './containers/account/account.component';
 import { ProfileComponent } from './containers/profile/profile.component';
 import { FooterComponent } from './components/footer/footer.component';
-import { ErrorComponent } from './error/error.component';
+import { ErrorComponent } from './containers/error/error.component';
+import { HeaderComponent } from './components/header/header.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { ErrorComponent } from './error/error.component';
     AccountComponent,
     ProfileComponent,
     FooterComponent,
-    ErrorComponent
+    ErrorComponent,
+    HeaderComponent
   ],
   imports: [
     BrowserModule,

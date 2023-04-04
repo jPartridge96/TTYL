@@ -5,7 +5,7 @@ import { ChatComponent } from "./containers/chat/chat.component";
 import { AuthenticateComponent } from "./containers/authenticate/authenticate.component";
 import { AccountComponent } from "./containers/account/account.component";
 import { ProfileComponent } from "./containers/profile/profile.component";
-import { ErrorComponent } from "./error/error.component";
+import { ErrorComponent } from "./containers/error/error.component";
 
 const routes: Routes = [
   { path: 'authenticate', component: AuthenticateComponent },

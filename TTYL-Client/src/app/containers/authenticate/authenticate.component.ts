@@ -49,7 +49,6 @@ sentVerification: boolean = false;
     let otpCode = event.target.value;
     if (otpCode.length === 6 && this.sentVerification) {
       this.socket.emit('verify-otp', otpCode);
-      console.log("It's 6 digits long!!");
     }
   }
 
