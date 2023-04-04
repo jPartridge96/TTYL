@@ -1,5 +1,6 @@
 const { writeLog } = require('../utils/logger');
 const { onMessageReceived } = require('../services/chat');
+const { verifyOtp, sendOtp } = require('../utils/otp');
 
 let userList = new Map();
 
@@ -15,6 +16,32 @@ function setupSocket(io) {
 
         socket.broadcast.emit('user-list', [...userList.keys()]);
         socket.emit('user-list', [...userList.keys()]);
+
+        socket.on('send-otp', (phNum) => sendOtp(phNum)
+        .then(sid => {
+            socket.otpSid = sid; // store the verification sid in the socket
+            socket.phNum = phNum;
+        })
+        .catch(error => {
+            console.error(error);
+        }));
+
+        socket.on('verify-otp', (code) => verifyOtp(socket.phNum, code)
+        .then(isVerified => {
+            if (isVerified) {
+                socket.emit('otp-verified', 'app-account');
+                writeLog(`OTP verified for ${socket.phNum}`);
+
+                socket.otpSid = null;
+                socket.phNum = null;
+            } else {
+                socket.emit('otp-verification-failed');
+                writeLog(`OTP verification failed for ${socket.phNum}`);
+            }
+        })
+        .catch(error => {
+            console.error(error);
+        }));
 
         socket.on('message', (msg) => onMessageReceived(socket, userName, msg));
 

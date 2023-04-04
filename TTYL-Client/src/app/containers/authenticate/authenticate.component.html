@@ -6,23 +6,24 @@
 
     <div class="row mb-2">
       <div class="col">
-        <select name="country" class="btn text-white">
+        <select name="country" class="btn text-white" (change)="cmbCountryCode_change($event)">
           <option value="+1" class="text-black">🇨🇦 (+1)</option>
           <option value="+1" class="text-black">🇺🇸 (+1)</option>
           <option value="+52" class="text-black">🇲🇽 (+52)</option>
+          <option value="+91" class="text-black">🇮🇳 (+91)</option>
         </select>
       </div>
       <div class="col">
-        <input type="text" class="text-border-bottom text-white" placeholder="Phone Number">
+        <input type="text" class="text-border-bottom text-white" placeholder="Phone Number" (input)="txtPhoneNumber_input($event)">
       </div>
     </div>
 
     <div class="row">
       <div class="col">
-        <button class="btn text-white btn-sm m-2" style="background-color: #454545">Send Code</button>
+        <button id="btnSendCode" class="btn text-white btn-sm m-2" style="background-color: #454545" [disabled]="!(isValidPhNum && !isCodeCooldown)" (click)="btnSendCode_click($event)">Send Code</button>
       </div>
       <div class="col">
-        <input type="text" class="text-border-bottom text-white" placeholder="Verification Code">
+        <input type="text" class="text-border-bottom text-white" placeholder="Verification Code" (input)="txtVerification_input($event)">
       </div>
     </div>
 

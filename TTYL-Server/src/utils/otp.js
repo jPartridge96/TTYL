@@ -1,4 +1,5 @@
 const twilio = require('twilio');
+const { writeLog } = require('./logger');
 require('dotenv').config();
 
 const client = twilio(process.env.twilioAccSid, process.env.twilioAuth);
@@ -6,14 +7,10 @@ const serviceSid = process.env.twilioServSid;
 
 /**
  * Sends an OTP to the given phone number
- * @param {*} countryCode
- * @param {*} areaCode 
- * @param {*} phoneNumber 
+ * @param {*} phNum 
  * @returns {string} verification sid
  */
-async function sendOTP(countryCode, areaCode, phoneNumber) {
-  const phNum = `${countryCode}${areaCode}${phoneNumber}`;
-
+async function sendOtp(phNum) {
   try {
     const verification = await client.verify.v2.services(serviceSid)
       .verifications
@@ -32,7 +29,13 @@ async function sendOTP(countryCode, areaCode, phoneNumber) {
  * @param {*} code
  * @returns {boolean} true if OTP is verified, false otherwise
  */
-async function verifyOTP(phNum, code) {
+async function verifyOtp(phNum, code) {
+  if(!phNum || !code){
+    return false;
+  }
+
+  console.log(`Verifying OTP for ${phNum} with code ${code}`);
+
   try {
     const verificationCheck = await client.verify.v2.services(serviceSid)
       .verificationChecks
@@ -40,9 +43,9 @@ async function verifyOTP(phNum, code) {
 
     return verificationCheck.status === 'approved';
   } catch (error) {
-    console.error(error);
+    writeLog(error);
     throw new Error('Failed to verify OTP');
   }
 }
 
-module.exports = { sendOTP, verifyOTP };
+module.exports = { sendOtp, verifyOtp };

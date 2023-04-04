@@ -24,7 +24,13 @@ function onMessageReceived(socket, userName, msg) {
 /**
  * Handle message edited
  */
-function onMessageEdited() {
+function onMessageEdit() {
+    // When the user edits a message, the message is deleted and a new message is sent
+}
+/**
+ * Handle message reply
+ */
+function onMessageReply() {
 
 }
 
