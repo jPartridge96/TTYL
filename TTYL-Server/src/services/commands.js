@@ -1,5 +1,3 @@
-const { sendOTP, verifyOTP } = require('../utils/otp');
-
 /**
  * Handles commands
  * @param {*} socket 

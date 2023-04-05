@@ -2,7 +2,7 @@
     "app": {
         "name": "TOTYL",
         "description": "A lightweight & secure social messaging app",
-        "version": "0.01",
+        "version": "0.2",
         "authors": [
             "Jordan Partridge",
             "Thomas Heal"
@@ -13,6 +13,7 @@
         "logging": false,
         "create_database": false,
         "port": 3000,
-        "production": false
+        "production": false,
+        "min-ver": "0.1"
     }
 }

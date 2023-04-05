@@ -17,7 +17,7 @@ if(config.server.logging) {
     } catch (error) {
       console.error(`Failed to create log file: ${fileName}. Error: ${error}`);
     }
-    const logStream = fs.createWriteStream(fileName, { flags: 'a' });
+    var logStream = fs.createWriteStream(fileName, { flags: 'a' });
 } else {
     console.log("Server Logging is disabled - files will not be saved.");
 }
