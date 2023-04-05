@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Output} from '@angular/core';
 
+// Allows use of jQuery tags
 declare var $: any;
 
 @Component({

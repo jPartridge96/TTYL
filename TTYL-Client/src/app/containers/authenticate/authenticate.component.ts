@@ -38,7 +38,7 @@ sentVerification: boolean = false;
 
   txtPhoneNumber_input(event: any) {
     // Twilio recommends /^\+[1-9]\d{1,14}$/ per E.164 standard.
-    // However, available countries can only range from 8-10.
+    // However, our supported countries can only range from 8-10.
 
     const phRegex = /^\+[1-9]\d{8,10}$/;
     this.formattedPh = `${this.countryCode}${event.target.value.replace(/[()-\s]/g, '')}`;
@@ -78,6 +78,5 @@ sentVerification: boolean = false;
         this.router.navigate(['/create-account']);
       }
     });
-
   }
 }
