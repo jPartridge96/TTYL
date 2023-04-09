@@ -1,6 +1,7 @@
 const { writeLog } = require('../utils/logger');
 const { onMessageReceived } = require('../services/chat');
 const { verifyOtp, sendOtp } = require('../utils/otp');
+const { readAccountData } = require('../services/account');
 
 let userList = new Map();
 
@@ -29,7 +30,7 @@ function setupSocket(io) {
         socket.on('verify-otp', (code) => verifyOtp(socket.phNum, code)
         .then(isVerified => {
             if (isVerified) {
-                socket.emit('otp-verified', false); // replace 'false' with bool check if account exists
+                readAccountData(socket.phNum).then((data) => socket.emit('otp-verified', data));
                 writeLog(`OTP verified for ${socket.phNum}`);
 
                 socket.otpSid = null;

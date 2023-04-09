@@ -1,6 +1,8 @@
 const mysql = require('mysql2/promise');
 const { writeLog } = require('./logger');
 
+let instance = null;
+
 /**
  * Initializes the Database service with connection variables stored in the local environment
  */
@@ -9,6 +11,10 @@ class Database {
      * Creates a new Database instance
      */
     constructor() {
+        if (instance) {
+            return instance;
+        }
+
         try {
             if (process.env.sqlPass) {
                 mysql.createConnection({
@@ -26,6 +32,8 @@ class Database {
         } catch (err) {
             writeLog(`Unable to connect to DB: ${err}`);
         }
+
+        instance = this;
     }
     /**
      * Executes the SQL query with the specified parameters
@@ -93,4 +101,4 @@ class Database {
               })})})})})}
 }
 
-module.exports = Database;
+module.exports = new Database();

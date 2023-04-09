@@ -6,7 +6,7 @@ const express = require('express');
 const fs = require('fs'); // File system R/W
 require('dotenv').config({ path: '.env.local' });
 
-const Database = require('./utils/database');
+const db = require('./utils/database');
 const { setupSocket } = require('./services/socket');
 const { writeLog } = require('./utils/logger');
 const config = JSON.parse(fs.readFileSync('config.json'));
@@ -41,9 +41,7 @@ function getServVer() {
 /**
  * Starts the server
  */
-async function startServer() {
-    const db = new Database();
-    
+async function startServer() {    
     // Socket.io Setup
     setupSocket(io);
 

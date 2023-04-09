@@ -7,10 +7,14 @@ import { Component } from '@angular/core';
 })
 export class ProfileComponent {
   btnSkip_click() {
+    let firstName = sessionStorage.getItem("first_name");
+    let lastName = sessionStorage.getItem("last_name");
+
+    let nickname = `${firstName} ${lastName}`;
     // Skips profile creation and sets default avatar
     // Profile name will be set to the user's first and last name.
 
-    // First time ? Skip will be renamed to 'Back' when user is returnee
+    // First time ? Skip will be renamed to 'Back' when user is returnee -- If user is logged in, then show back
     // Redirect back to conversations
   }
 
