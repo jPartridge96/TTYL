@@ -14,6 +14,7 @@ import { ProfileComponent } from './containers/profile/profile.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { ErrorComponent } from './containers/error/error.component';
 import { HeaderComponent } from './components/header/header.component';
+import { ToastComponent } from './components/toast/toast.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { HeaderComponent } from './components/header/header.component';
     ProfileComponent,
     FooterComponent,
     ErrorComponent,
-    HeaderComponent
+    HeaderComponent,
+    ToastComponent
   ],
   imports: [
     BrowserModule,
