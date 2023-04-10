@@ -1,16 +1,16 @@
 const { writeLog } = require('../utils/logger');
 const db = require('../utils/database');
 
-function createAccountData(accData, profData) {
+function createAccountData(data) {
     return db.query(`INSERT INTO profiles (nickname, avatar)
-                    VALUES ('${profData.nickname}', NULL)`)
+                    VALUES ('${data.profData.nickname}', NULL)`)
     .then((result) => {
-        const p_id = result.insertId;
+        const p_id = result[0].insertId;
         return db.query(`INSERT INTO accounts (phone, first_name, last_name, dob, p_id)
-                        VALUES ('${accData.phone}', '${accData.firstName}', '${accData.lastName}', '${accData.dob}', '${p_id}')`);
+                        VALUES ('${data.accData.phone}', '${data.accData.firstName}', '${data.accData.lastName}', '${data.accData.dob}', '${p_id}')`);
     })
     .then((result) => {
-        console.log(`Account created for '${accData.phNum}' with ID ${result.insertId}`);
+        console.log(`Account created for '${data.accData.phone}' with ID ${result[0].insertId}`);
         return true;
     })
     .catch((error) => {
@@ -43,4 +43,4 @@ function deleteAccountData() {
     
 }
 
-module.exports = { readAccountData };
+module.exports = { readAccountData, createAccountData };

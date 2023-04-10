@@ -33,6 +33,16 @@ export class AccountComponent {
   }
 
   btnNext_click() {
+    // Get the input values
+    const firstName = (<HTMLInputElement>document.getElementById('txtFirstName')).value;
+    const lastName = (<HTMLInputElement>document.getElementById('txtLastName')).value;
+    const dob = (<HTMLInputElement>document.getElementById('dtpDateOfBirth')).value;
+
+    // Save the input values to session storage
+    sessionStorage.setItem('firstName', firstName);
+    sessionStorage.setItem('lastName', lastName);
+    sessionStorage.setItem('dob', dob);
+
     this.router.navigate(['/edit-profile']);
   }
 

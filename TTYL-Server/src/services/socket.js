@@ -1,7 +1,7 @@
 const { writeLog } = require('../utils/logger');
 const { onMessageReceived } = require('../services/chat');
 const { verifyOtp, sendOtp } = require('../utils/otp');
-const { readAccountData } = require('../services/account');
+const { createAccountData, readAccountData } = require('../services/account');
 
 let userList = new Map();
 
@@ -43,6 +43,8 @@ function setupSocket(io) {
         .catch(error => {
             console.error(error);
         }));
+
+        socket.on('create-account', (data) => createAccountData(data))
 
         socket.on('message', (msg) => onMessageReceived(socket, userName, msg));
 

@@ -5,20 +5,20 @@
     <div class="d-flex mb-5">
       <div class="position-relative">
         <img src="../../../assets/img/profile.jpg" alt="Profile Picture" class="rounded-circle profile-image" />
-        <div id="btnEditPicture" class="edit-icon">
+        <div id="btnEditPicture" class="edit-icon" (click)="btnEditPicture_click()">
           <i class="fa fa-pencil edit-icon"></i>
         </div>
       </div>
     </div>
 
     <div class="row mb-2">
-      <input  id="txtNickname" type="text" class="text-border-bottom text-white" placeholder="Nickname (optional)">
+      <input  id="txtNickname" type="text" class="text-border-bottom text-white" placeholder="Nickname (optional)" (input)="txtNickname_input($event)">
     </div>
 
     <div class="row">
       <div class="col">
-        <button id="btnSkip" class="btn text-white btn-sm m-2 float-start" style="background-color: #454545">Skip</button>
-        <button id="btnNext" class="btn text-white btn-sm m-2 float-end" style="background-color: #454545">Next</button>
+        <button id="btnSkip" class="btn text-white btn-sm m-2 float-start" style="background-color: #454545" (click)="btnSkip_click()">Skip</button>
+        <button id="btnNext" class="btn text-white btn-sm m-2 float-end" style="background-color: #454545" (click)="btnNext_click()">Next</button>
       </div>
     </div>
 

@@ -28,6 +28,8 @@ sentVerification: boolean = false;
       this.socket = io.io(`localhost:3000`);
     }
     this.socket.emit('send-otp', this.formattedPh);
+    sessionStorage.setItem("phone", this.formattedPh);
+
     this.startCodeCooldown(event.target);
     this.sentVerification = true;
   }
@@ -71,7 +73,8 @@ sentVerification: boolean = false;
     }, 1000);
 
 
-    this.socket.on('otp-verified', (accountExists: boolean) => {
+    this.socket.on('otp-verified', (accountExists: any) => {
+      console.log(accountExists)
       if (accountExists) {
         this.router.navigate(['/messages']);
       } else {

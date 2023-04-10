@@ -21,7 +21,7 @@
         <button id="btnSendCode" class="btn text-white btn-sm m-2" style="background-color: #454545" [disabled]="!(isValidPhNum && !isCodeCooldown)" (click)="btnSendCode_click($event)">Send Code</button>
       </div>
       <div class="col">
-        <input type="text" class="text-border-bottom text-white" placeholder="Verification Code" (input)="txtVerification_input($event)">
+        <input type="text" class="text-border-bottom text-white" placeholder="Verification Code" (input)="txtVerification_input($event)" autocomplete="one-time-code">
       </div>
     </div>
 
