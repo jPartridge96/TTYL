@@ -31,6 +31,10 @@ sentVerification: boolean = false;
 
     this.socket.on('restore-session', (data: any) => {
       if (data) {
+        if(sessionStorage.getItem('phone') == null) {
+          sessionStorage.setItem("phone", this.formattedPh);
+        }
+
         sessionStorage.setItem('firstName', data.account.first_name);
         sessionStorage.setItem('lastName', data.account.last_name);
         sessionStorage.setItem('dob', data.account.dob);
@@ -48,7 +52,6 @@ sentVerification: boolean = false;
 
   btnSendCode_click(event: any) {
     this.socket.emit('send-otp', this.formattedPh);
-    sessionStorage.setItem("phone", this.formattedPh);
 
     this.startCodeCooldown(event.target);
     this.sentVerification = true;
