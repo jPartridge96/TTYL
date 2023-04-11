@@ -12,7 +12,6 @@ export class AuthenticateComponent {
 socket: any;
 
 countryCode: string = "+1";
-phNum: string = "";
 formattedPh: string = "";
 
 isValidPhNum: boolean = false;
@@ -23,10 +22,33 @@ sentVerification: boolean = false;
 
   constructor(private router: Router) {}
 
-  btnSendCode_click(event: any) {
+  ngOnInit() {
     if(this.socket == null) {
       this.socket = io.io(`localhost:3000`);
     }
+
+    if(sessionStorage.getItem('phone')) {
+      this.socket.emit('reload-session', sessionStorage.getItem('phone'));
+    }
+
+    this.socket.on('restore-session', (data: any) => {
+      if (data) {
+        sessionStorage.setItem('firstName', data.account.first_name);
+        sessionStorage.setItem('lastName', data.account.last_name);
+        sessionStorage.setItem('dob', data.account.dob);
+
+        // query and load profile data
+        sessionStorage.setItem('avatar', data.profile.avatar);
+        sessionStorage.setItem('nickname', data.profile.nickname);
+
+        this.router.navigate(['/messages']);
+      } else {
+        this.router.navigate(['/create-account']);
+      }
+    });
+  }
+
+  btnSendCode_click(event: any) {
     this.socket.emit('send-otp', this.formattedPh);
     sessionStorage.setItem("phone", this.formattedPh);
 
@@ -71,15 +93,5 @@ sentVerification: boolean = false;
         btnSendCode.innerHTML = "Send Code";
       }
     }, 1000);
-
-
-    this.socket.on('otp-verified', (accountExists: any) => {
-      console.log(accountExists)
-      if (accountExists) {
-        this.router.navigate(['/messages']);
-      } else {
-        this.router.navigate(['/create-account']);
-      }
-    });
   }
 }

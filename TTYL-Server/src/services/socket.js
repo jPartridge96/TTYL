@@ -2,6 +2,7 @@ const { writeLog } = require('../utils/logger');
 const { onMessageReceived } = require('../services/chat');
 const { verifyOtp, sendOtp } = require('../utils/otp');
 const { createAccountData, readAccountData } = require('../services/account');
+const { readProfileData } = require('../services/profile');
 
 let userList = new Map();
 
@@ -30,7 +31,11 @@ function setupSocket(io) {
         socket.on('verify-otp', (code) => verifyOtp(socket.phNum, code)
         .then(isVerified => {
             if (isVerified) {
-                readAccountData(socket.phNum).then((data) => socket.emit('otp-verified', data));
+                readAccountData(socket.phNum).then((account) => {
+                    readProfileData(account.p_id).then((profile) => {
+                        socket.emit('restore-session', { account, profile });
+                    });
+                });
                 writeLog(`OTP verified for ${socket.phNum}`);
 
                 socket.otpSid = null;
@@ -44,7 +49,14 @@ function setupSocket(io) {
             console.error(error);
         }));
 
-        socket.on('create-account', (data) => createAccountData(data))
+        socket.on('create-account', (data) => createAccountData(data));
+
+        socket.on('reload-session', (phNum) => readAccountData(phNum)
+        .then((account) => {
+            readProfileData(account.p_id).then((profile) => {
+                socket.emit('restore-session', { account, profile });
+            });
+        }));
 
         socket.on('message', (msg) => onMessageReceived(socket, userName, msg));
 

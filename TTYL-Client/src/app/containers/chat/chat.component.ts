@@ -31,13 +31,12 @@ export class ChatComponent {
     }
   }
 
+  ngOnInit() {
+    let nick = sessionStorage.getItem('nickname');
+    this.socket = io.io(`localhost:3000?userName=${nick}`); // Change to backend IP when hosting publicly
+    this.userName = nick!;
 
-
-  userNameUpdate(name: string):void {
-    this.socket = io.io(`localhost:3000?userName=${name}`); // Change to backend IP when hosting publicly
-    this.userName = name;
-
-    this.socket.emit('set-user-name', name);
+    this.socket.emit('set-user-name', nick);
 
     this.socket.on('user-list', (userList: string[]) => {
       this.userList = userList;
@@ -50,8 +49,30 @@ export class ChatComponent {
       }
     });
 
-    this.currentChatUser = name;
+    this.currentChatUser = nick!;
   }
+
+  //
+  //
+  // userNameUpdate(name: string):void {
+  //   this.socket = io.io(`localhost:3000?userName=${name}`); // Change to backend IP when hosting publicly
+  //   this.userName = name;
+  //
+  //   this.socket.emit('set-user-name', name);
+  //
+  //   this.socket.on('user-list', (userList: string[]) => {
+  //     this.userList = userList;
+  //   });
+  //
+  //   this.socket.on('message-broadcast', (data: {message: string, userName: string}) => {
+  //     if(data) {
+  //       const isSender = data.userName === this.userName;
+  //       this.messageList.push({message: data.message, userName: data.userName, isSender: isSender});
+  //     }
+  //   });
+  //
+  //   this.currentChatUser = name;
+  // }
 
   sendMessage(chatUser: string):void {
     if (!this.currentChatUser) {
