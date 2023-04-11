@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import * as io from "socket.io-client";
 import { Router } from '@angular/router';
+import {AppComponent} from "../../app.component";
 
 
 @Component({
@@ -20,13 +20,11 @@ codeInterval: number = 30;
 interval: any;
 sentVerification: boolean = false;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private appComponent: AppComponent) {
+    this.socket = appComponent.socket;
+  }
 
   ngOnInit() {
-    if(this.socket == null) {
-      this.socket = io.io(`localhost:3000`);
-    }
-
     if(sessionStorage.getItem('phone')) {
       this.socket.emit('reload-session', sessionStorage.getItem('phone'));
     }

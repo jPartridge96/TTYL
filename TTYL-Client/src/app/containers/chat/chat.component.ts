@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
+import { AppComponent } from "../../app.component";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import * as io from 'socket.io-client';
 
 @Component({
   selector: 'app-chat',
@@ -23,7 +23,9 @@ export class ChatComponent {
   userList: string[] = [];
   socket: any;
 
-  constructor() {
+  constructor(private appComponent: AppComponent) {
+    this.socket = appComponent.socket;
+
     // Retrieve the message list from session storage
     const storedMessageList = sessionStorage.getItem('messageList');
     if (storedMessageList) {
@@ -33,7 +35,6 @@ export class ChatComponent {
 
   ngOnInit() {
     let nick = sessionStorage.getItem('nickname');
-    this.socket = io.io(`localhost:3000?userName=${nick}`); // Change to backend IP when hosting publicly
     this.userName = nick!;
 
     this.socket.emit('set-user-name', nick);
@@ -48,7 +49,6 @@ export class ChatComponent {
         this.messageList.push({message: data.message, userName: data.userName, isSender: isSender});
       }
     });
-
     this.currentChatUser = nick!;
   }
 

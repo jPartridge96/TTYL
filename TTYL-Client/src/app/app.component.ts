@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import * as io from "socket.io-client";
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,11 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'TOTYL';
+
+  socket: any;
+  ngOnInit() {
+    if(this.socket == null) {
+      this.socket = io.io(`localhost:3000`);
+    }
+  }
 }

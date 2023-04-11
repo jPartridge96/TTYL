@@ -12,12 +12,13 @@ let userList = new Map();
  */
 function setupSocket(io) {
     io.on('connection', (socket) => {
+        // Deprecated?
         let userName = socket.handshake.query.userName;
         addUser(userName, socket.id);
-        writeLog(`${userName} has connected. [${socket.id}]`);
-
         socket.broadcast.emit('user-list', [...userList.keys()]);
         socket.emit('user-list', [...userList.keys()]);
+
+        writeLog(`Incoming connection from ${socket.request.connection.remoteAddress}:${socket.request.connection.remotePort} [${socket.id}]`);
 
         socket.on('send-otp', (phNum) => sendOtp(phNum)
         .then(sid => {
@@ -60,11 +61,12 @@ function setupSocket(io) {
 
         socket.on('message', (msg) => onMessageReceived(socket, userName, msg));
 
+        // Deprecated?
         socket.on('disconnect', (reason) => {
             delUser(userName, socket.id);
             socket.broadcast.emit('user-list', [...userList.keys()]);
             socket.emit('user-list', [...userList.keys()]);
-            writeLog(`${userName} has disconnected (${reason}). [${socket.id}]`);
+            // writeLog(`${userName} has disconnected (${reason}). [${socket.id}]`);
         });
 
         socket.on('get-date', () => {
@@ -76,6 +78,7 @@ function setupSocket(io) {
     });
 }
 
+// Deprecated?
 /**
  * Add user to the user list
  * @param {*} userName 
@@ -89,6 +92,7 @@ function addUser(userName, id) {
     }
 }
 
+// Deprecated?
 /**
  * Delete user from the user list
  * @param {*} userName 

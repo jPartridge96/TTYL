@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import * as io from "socket.io-client";
 import { Router } from '@angular/router';
+import {AppComponent} from "../../app.component";
 
 @Component({
   selector: 'app-profile',
@@ -18,7 +18,9 @@ export class ProfileComponent {
   avatar: any;
   nickname: string = "";
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private appComponent: AppComponent) {
+    this.socket = appComponent.socket;
+  }
 
   /**
    * Automatically populates name and nickname data fields,
@@ -33,19 +35,11 @@ export class ProfileComponent {
     this.nickname = `${this.firstName} ${this.lastName}`;
   }
   btnSkip_click() {
-    if(this.socket == null) {
-      this.socket = io.io(`localhost:3000`);
-    }
-
     this.emitCreateAccount();
     this.router.navigate(['/messages']);
   }
 
   btnNext_click() {
-    if(this.socket == null) {
-      this.socket = io.io(`localhost:3000`);
-    }
-
     this.emitCreateAccount();
     this.router.navigate(['/messages']);
   }
