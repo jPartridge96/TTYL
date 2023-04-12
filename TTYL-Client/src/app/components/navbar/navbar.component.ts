@@ -6,5 +6,17 @@ import { Component } from '@angular/core';
   styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent {
+  ngOnInit() {
+    const sidebarItems = document.querySelectorAll<HTMLElement>(".sidebar ul li");
 
+    sidebarItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const activeItem = document.querySelector(".sidebar ul li.active");
+        if (activeItem) {
+          activeItem.classList.remove('active');
+        }
+        item.classList.add('active');
+      });
+    });
+  }
 }

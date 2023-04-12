@@ -30,41 +30,7 @@
       <hr class="h-color mx-4">
       <ul class="messages list-unstyled px-2">
         <li class="active">
-          <a href="messages" class="text-decoration-none px-3 py-2 d-block d-flex">
-            <span style="display: flex; align-items: center; justify-content: center;">
-              <i class="fa fa-user fa-2xl"></i>
-            </span>
-
-            <span>
-              <strong>Username</strong> <br/>
-              <small><small>Message text...</small></small>
-            </span>
-          </a>
-
-          <span class="badge right">
-              <span class="bg-dark rounded-pill text-white py-1 px-2">99+</span>
-            </span>
-        </li>
-
-        <li class="">
-          <a href="messages" class="text-decoration-none px-3 py-2 d-block d-flex">
-            <span style="display: flex; align-items: center; justify-content: center;">
-              <i class="fa fa-user fa-2xl"></i>
-            </span>
-
-            <span>
-              <strong>Username</strong> <br/>
-              <small><small>Message text...</small></small>
-            </span>
-          </a>
-
-          <span class="badge right">
-              <span class="bg-dark rounded-pill text-white py-1 px-2">99+</span>
-            </span>
-        </li>
-
-        <li class="">
-          <a href="messages" class="text-decoration-none px-3 py-2 d-block d-flex">
+          <a class="text-decoration-none px-3 py-2 d-block d-flex">
             <span style="display: flex; align-items: center; justify-content: center;">
               <i class="fa fa-user fa-2xl"></i>
             </span>
@@ -83,24 +49,33 @@
       <hr class="h-color mx-4">
 
       <ul class="list-unstyled px-2 fixed-bottom">
-        <li class=""><a href="/settings" class="text-decoration-none px-3 py-2 d-block"><i class="fa fa-gear"></i> Settings</a></li> <!-- Which one is best? -->
-
-        <li class=""><a href="/edit-profile" class="text-decoration-none px-3 py-2 d-block"><i class="fa fa-user"></i> Profile</a></li>
+        <li class=""><a href="/settings" class="text-decoration-none px-3 py-2 d-block"><i class="fa fa-gear"></i> Settings</a></li>
         <li class=""><a href="/about" class="text-decoration-none px-3 py-2 d-block"><i class="fa fa-address-card"></i> About</a></li>
         <li class=""><a href="/logout" class="text-decoration-none px-3 py-2 d-block"><i class="fa fa-arrow-right-from-bracket"></i> Log out</a></li>
       </ul>
     </div>
 
     <div class="content">
-      
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+          <div class="d-flex navbar-expand">
+            <button class="btn px-1 py-0 open-btn"><i class="fa-solid fa-bars"></i></button>
+          </div>
+
+          <div class="m-auto text-center px-3">
+            <!--
+              online : #00c200, fa-fade
+              offline: #ff0000
+            -->
+            <i class="fa-solid fa-circle fa-fade fa-2xs" style="color: #00c200;"></i> Username
+          </div>
+
+          <span class="d-flex navbar-text">
+              <i class="fa-solid fa-id-badge fa-xl"></i>
+            </span>
+        </div>
+      </nav>
     </div>
   </div>
 </body>
-
-<script>
-  $(".sidebar ul li").on('click', function() {
-    $(".sidebar ul li.active").removeClass('active');
-    $(this).addClass('active');
-  });
-</script>
 
