@@ -1,3 +1,4 @@
+<!--
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <a class="navbar-brand" href="#">My Website</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -17,3 +18,89 @@
     </ul>
   </div>
 </nav>
+-->
+<body>
+  <div class="main-container d-flex">
+    <div class="sidebar" id="side_nav" style="position: fixed; height: 100%"> <!-- Remove style -->
+      <div class="header-box px-2 pt-3 pb-4">
+        <h1 class="fs-4"><span class="bg-white text-dark rounded shadow px-2 me-2">TTYL</span> <span class="text-white">Messages</span></h1>
+        <button class="btn d-md-none d-block close-btn px-1 py-0 text-white"><i class="fa-solid fa-bars"></i></button>
+      </div>
+
+      <hr class="h-color mx-4">
+      <ul class="messages list-unstyled px-2">
+        <li class="active">
+          <a href="messages" class="text-decoration-none px-3 py-2 d-block d-flex">
+            <span style="display: flex; align-items: center; justify-content: center;">
+              <i class="fa fa-user fa-2xl"></i>
+            </span>
+
+            <span>
+              <strong>Username</strong> <br/>
+              <small><small>Message text...</small></small>
+            </span>
+          </a>
+
+          <span class="badge right">
+              <span class="bg-dark rounded-pill text-white py-1 px-2">99+</span>
+            </span>
+        </li>
+
+        <li class="">
+          <a href="messages" class="text-decoration-none px-3 py-2 d-block d-flex">
+            <span style="display: flex; align-items: center; justify-content: center;">
+              <i class="fa fa-user fa-2xl"></i>
+            </span>
+
+            <span>
+              <strong>Username</strong> <br/>
+              <small><small>Message text...</small></small>
+            </span>
+          </a>
+
+          <span class="badge right">
+              <span class="bg-dark rounded-pill text-white py-1 px-2">99+</span>
+            </span>
+        </li>
+
+        <li class="">
+          <a href="messages" class="text-decoration-none px-3 py-2 d-block d-flex">
+            <span style="display: flex; align-items: center; justify-content: center;">
+              <i class="fa fa-user fa-2xl"></i>
+            </span>
+
+            <span>
+              <strong>Username</strong> <br/>
+              <small><small>Message text...</small></small>
+            </span>
+          </a>
+
+          <span class="badge right">
+              <span class="bg-dark rounded-pill text-white py-1 px-2">99+</span>
+            </span>
+        </li>
+      </ul>
+      <hr class="h-color mx-4">
+
+      <ul class="list-unstyled px-2 fixed-bottom">
+        <li class=""><a href="/settings" class="text-decoration-none px-3 py-2 d-block"><i class="fa fa-gear"></i> Settings</a></li> <!-- Which one is best? -->
+
+        <li class=""><a href="/edit-profile" class="text-decoration-none px-3 py-2 d-block"><i class="fa fa-user"></i> Profile</a></li>
+        <li class=""><a href="/about" class="text-decoration-none px-3 py-2 d-block"><i class="fa fa-address-card"></i> About</a></li>
+        <li class=""><a href="/logout" class="text-decoration-none px-3 py-2 d-block"><i class="fa fa-arrow-right-from-bracket"></i> Log out</a></li>
+      </ul>
+    </div>
+
+    <div class="content">
+      
+    </div>
+  </div>
+</body>
+
+<script>
+  $(".sidebar ul li").on('click', function() {
+    $(".sidebar ul li.active").removeClass('active');
+    $(this).addClass('active');
+  });
+</script>
+
