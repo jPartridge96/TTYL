@@ -12,7 +12,7 @@
         </select>
       </div>
       <div class="col">
-        <input type="text" class="text-border-bottom text-white" placeholder="Phone Number" (input)="txtPhoneNumber_input($event)">
+        <input type="text" class="text-border-bottom text-white input-short" placeholder="Phone Number" pattern="\d*" inputmode="numeric" (input)="txtPhoneNumber_input($event)">
       </div>
     </div>
 
@@ -21,7 +21,7 @@
         <button id="btnSendCode" class="btn text-white btn-sm m-2" style="background-color: #454545" [disabled]="!(isValidPhNum && !isCodeCooldown)" (click)="btnSendCode_click($event)">Send Code</button>
       </div>
       <div class="col">
-        <input type="text" class="text-border-bottom text-white" placeholder="Verification Code" (input)="txtVerification_input($event)" autocomplete="one-time-code">
+        <input type="text" class="text-border-bottom text-white input-short" placeholder="Verification Code" pattern="\d*" inputmode="numeric" (input)="txtVerification_input($event)" autocomplete="one-time-code">
       </div>
     </div>
 

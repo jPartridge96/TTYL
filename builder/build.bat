@@ -51,22 +51,22 @@ echo Updating config.xml file
 cd ..
 del config.xml
 echo success: old config.xml deleted
-copy ..\..\config.xml .
+copy ..\..\builder\config.xml .
 echo success: new config.xml copied
 
 echo copying icon and splash
-copy ..\..\icon.png .
-copy ..\..\splash.png .
+copy ..\..\builder\icon.png .
+copy ..\..\builder\splash.png .
 echo success: copying complete
 
 echo executing packing commands
-call ..\..\plugins.bat
+call ..\..\builder\plugins.bat
 
 
 :DONE
-@REM Copy the apk from
 mkdir ..\..\releases
 copy platforms\android\app\build\outputs\apk\debug\app-debug.apk ..\..\releases
+del ..\..\releases\totyl-v1.0.apk
 ren ..\..\releases\app-debug.apk totyl-v1.0.apk
 
 echo changing folder to original path

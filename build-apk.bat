@@ -1,0 +1,1 @@
+C:\Windows\System32\cmd.exe /c start "" ".\builder\build.bat" TTYL-Client
