@@ -33,13 +33,17 @@ function setupSocket(io) {
         .then(isVerified => {
             if (isVerified) {
                 readAccountData(socket.phNum).then((account) => {
-                    readProfileData(account.p_id).then((profile) => {
-                        socket.emit('restore-session', { account, profile });
-
-                        addUser(profile.nickname, socket.id);
-                        socket.broadcast.emit('user-list', [...userList.keys()]);
-                        socket.emit('user-list', [...userList.keys()]);
-                    });
+                    if (account == null) {
+                        socket.emit('restore-session', false);
+                    } else {
+                        readProfileData(account.p_id).then((profile) => {
+                            socket.emit('restore-session', { account, profile });
+    
+                            addUser(profile.nickname, socket.id);
+                            socket.broadcast.emit('user-list', [...userList.keys()]);
+                            socket.emit('user-list', [...userList.keys()]);
+                        });
+                    }
                 });
                 writeLog(`OTP verified for ${socket.phNum}`);
 
