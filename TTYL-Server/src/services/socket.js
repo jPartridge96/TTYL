@@ -12,13 +12,13 @@ let userList = new Map();
  */
 function setupSocket(io) {
     io.on('connection', (socket) => {
-        // Deprecated?
-        let userName = socket.handshake.query.userName;
-        addUser(userName, socket.id);
+        writeLog(`Incoming connection from ${socket.request.connection.remoteAddress}:${socket.request.connection.remotePort} [${socket.id}]`);
+
+        const nickname = socket.handshake.query.nickname;
+
+        addUser(nickname, socket.id);
         socket.broadcast.emit('user-list', [...userList.keys()]);
         socket.emit('user-list', [...userList.keys()]);
-
-        writeLog(`Incoming connection from ${socket.request.connection.remoteAddress}:${socket.request.connection.remotePort} [${socket.id}]`);
 
         socket.on('send-otp', (phNum) => sendOtp(phNum)
         .then(sid => {
@@ -35,6 +35,10 @@ function setupSocket(io) {
                 readAccountData(socket.phNum).then((account) => {
                     readProfileData(account.p_id).then((profile) => {
                         socket.emit('restore-session', { account, profile });
+
+                        addUser(profile.nickname, socket.id);
+                        socket.broadcast.emit('user-list', [...userList.keys()]);
+                        socket.emit('user-list', [...userList.keys()]);
                     });
                 });
                 writeLog(`OTP verified for ${socket.phNum}`);
@@ -56,14 +60,18 @@ function setupSocket(io) {
         .then((account) => {
             readProfileData(account.p_id).then((profile) => {
                 socket.emit('restore-session', { account, profile });
+
+                addUser(profile.nickname, socket.id);
+                socket.broadcast.emit('user-list', [...userList.keys()]);
+                socket.emit('user-list', [...userList.keys()]);
             });
         }));
 
-        socket.on('message', (msg) => onMessageReceived(socket, userName, msg));
+        socket.on('message', (data) => onMessageReceived(socket, data.nick, data.msg));
 
         // Deprecated?
         socket.on('disconnect', (reason) => {
-            delUser(userName, socket.id);
+            delUser(nickname, socket.id);
             socket.broadcast.emit('user-list', [...userList.keys()]);
             socket.emit('user-list', [...userList.keys()]);
             // writeLog(`${userName} has disconnected (${reason}). [${socket.id}]`);
@@ -81,28 +89,28 @@ function setupSocket(io) {
 // Deprecated?
 /**
  * Add user to the user list
- * @param {*} userName 
+ * @param {*} nickname 
  * @param {*} id 
  */
-function addUser(userName, id) {
-    if(!userList.has(userName)) {
-        userList.set(userName, new Set(id))
+function addUser(nickname, id) {
+    if(!userList.has(nickname)) {
+        userList.set(nickname, new Set(id))
     } else {
-        userList.get(userName).add(id);
+        userList.get(nickname).add(id);
     }
 }
 
 // Deprecated?
 /**
  * Delete user from the user list
- * @param {*} userName 
+ * @param {*} nickname 
  * @param {*} id 
  */
-function delUser(userName, id) {
-    if(userList.has(userName)) {
-        let userIds = userList.get(userName);
+function delUser(nickname, id) {
+    if(userList.has(nickname)) {
+        let userIds = userList.get(nickname);
         if(userIds.size != 0) {
-            userList.delete(userName);
+            userList.delete(nickname);
         }
     }
 }

@@ -7,7 +7,7 @@ const { CommandHandler } = require('../services/commands');
  * @param {*} userName 
  * @param {*} msg 
  */
-function onMessageReceived(socket, userName, msg) {
+function onMessageReceived(socket, nickname, msg) {
     const utcTimestamp = new Date().toUTCString();
     const timestamp = new Date(utcTimestamp).toLocaleString('en-US', {hour12: false});
     const formattedTimestamp = timestamp.replace(',', '');
@@ -15,9 +15,9 @@ function onMessageReceived(socket, userName, msg) {
     if (msg.startsWith('/')) // Pass to commands.js if message starts with '/'
         CommandHandler(socket, msg, utcTimestamp);
     else {
-        socket.broadcast.emit('message-broadcast', { message: msg, userName: userName, timestamp: formattedTimestamp });
+        socket.broadcast.emit('message-broadcast', { message: msg, nickname: nickname, timestamp: formattedTimestamp });
         // socket.emit('message-broadcast', { message: msg, userName: userName, timestamp: formattedTimestamp });
-        writeLog(`[${formattedTimestamp}] ${userName}: ${msg}`);
+        writeLog(`[${formattedTimestamp}] ${nickname}: ${msg}`);
     }
 }
 

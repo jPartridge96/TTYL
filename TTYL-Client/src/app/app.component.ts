@@ -12,7 +12,10 @@ export class AppComponent {
   socket: any;
   ngOnInit() {
     if(this.socket == null) {
-      this.socket = io.io(`localhost:3000`);
+      this.socket = io.io(`localhost:3000?nickname=${sessionStorage.getItem('nickname') ? sessionStorage.getItem('nickname') : "anonymous"}`);
+
+
+      //   this.socket = io.io(`localhost:3000?userName=${name}`); // Change to backend IP when hosting publicly
     }
   }
 }

@@ -12,14 +12,14 @@ export class ChatComponent {
     return this._currentChatUser;
   }
 
-  set currentChatUser(username: string) {
-    this._currentChatUser = username;
+  set currentChatUser(nickname: string) {
+    this._currentChatUser = nickname;
   }
   private _currentChatUser = "";
 
-  userName = "";
+  nickname = "";
   message = "";
-  messageList: {message: string, userName: string, isSender: boolean}[] = [];
+  messageList: {message: string, nickname: string, isSender: boolean}[] = [];
   userList: string[] = [];
   socket: any;
 
@@ -34,8 +34,26 @@ export class ChatComponent {
   }
 
   ngOnInit() {
+    const sidebarMessages = document.querySelectorAll<HTMLElement>(".messages li");
+    const sidebar = document.querySelector<HTMLElement>(".sidebar")!;
+    const openNav = document.querySelector<HTMLElement>(".open-btn")!;
+
+    sidebarMessages.forEach(conversation => {
+      conversation.addEventListener('click', () => {
+        const activeConversation = document.querySelector(".messages li.active");
+        if (activeConversation) {
+          activeConversation.classList.remove('active');
+        }
+        conversation.classList.add('active');
+      });
+    });
+
+    openNav.addEventListener('click', () => {
+      sidebar.classList.add('active');
+    });
+
     let nick = sessionStorage.getItem('nickname');
-    this.userName = nick!;
+    this.nickname = nick!;
 
     this.socket.emit('set-user-name', nick);
 
@@ -43,10 +61,10 @@ export class ChatComponent {
       this.userList = userList;
     });
 
-    this.socket.on('message-broadcast', (data: {message: string, userName: string}) => {
+    this.socket.on('message-broadcast', (data: {message: string, nickname: string}) => {
       if(data) {
-        const isSender = data.userName === this.userName;
-        this.messageList.push({message: data.message, userName: data.userName, isSender: isSender});
+        const isSender = data.nickname === this.nickname;
+        this.messageList.push({message: data.message, nickname: data.nickname, isSender: isSender});
       }
     });
     this.currentChatUser = nick!;
@@ -80,20 +98,23 @@ export class ChatComponent {
       return;
     }
     const errorMessage = document.getElementById('chatInput');
-    if (!this.message || this.message.trim().length === 0) {
+    if (!this.message || this.message.trimEnd().trimStart().length === 0) {
       return;
     }
 
     // Check if the message is from the current user
-    const isSender = this.userName === chatUser;
+    const isSender = this.nickname === chatUser;
 
-    this.socket.emit('message', this.message);
+    this.socket.emit('message', {
+      nick: sessionStorage.getItem('nickname'),
+      msg: this.message
+    });
 
     // Only push the message as a my-message if it's from the current user
     if (isSender) {
-      this.messageList.push({ message: this.message, userName: this.userName, isSender: true });
+      this.messageList.push({ message: this.message, nickname: this.nickname, isSender: true });
     } else {
-      this.messageList.push({ message: this.message, userName: chatUser, isSender: false });
+      this.messageList.push({ message: this.message, nickname: chatUser, isSender: false });
     }
 
     // Save the message list to session storage
@@ -105,39 +126,48 @@ export class ChatComponent {
 
 
   showEmojiPicker():void {
-    const emojiPicker = document.createElement('div');
-    emojiPicker.classList.add('emoji-picker');
-    emojiPicker.style.position = 'fixed';
-    emojiPicker.style.bottom = '50px';
-    emojiPicker.style.right = '10px';
-    emojiPicker.style.backgroundColor = 'white';
-    emojiPicker.style.border = '1px solid #ccc';
-    emojiPicker.style.borderRadius = '5px';
-    emojiPicker.style.padding = '10px';
-    emojiPicker.style.display = 'flex';
-    emojiPicker.style.flexWrap = 'wrap';
-    emojiPicker.style.zIndex = '1000';
+    // Toggle the emoji picker
+    const emojiPickerEle = document.querySelector('.emoji-picker') as HTMLTextAreaElement;
+    if (emojiPickerEle) {
+      emojiPickerEle.remove();
+    } else {
 
-    const emojis = ['😀', '😂', '❤️', '👍', '👎', '🤔'];
-    emojis.forEach(emoji => {
-      const emojiButton = document.createElement('button');
-      emojiButton.innerText = emoji;
-      emojiButton.style.fontSize = "20px";
-      emojiButton.style.padding = "5px";
-      emojiButton.style.margin = "5px";
-      emojiButton.style.border = "none";
-      emojiButton.style.backgroundColor = "transparent";
-      emojiButton.style.cursor = "pointer";
 
-      emojiButton.addEventListener('click', () => {
-        const inputField = document.querySelector('#chatbox_input input') as HTMLInputElement;
-        inputField.value += emoji;
-        this.message = inputField.value;
-        inputField.focus();
-        emojiPicker.remove();
+      const emojiPicker = document.createElement('div');
+      emojiPicker.classList.add('emoji-picker');
+      emojiPicker.style.position = 'fixed';
+      emojiPicker.style.bottom = '50px';
+      emojiPicker.style.right = '10px';
+      emojiPicker.style.backgroundColor = 'white';
+      emojiPicker.style.border = '1px solid #ccc';
+      emojiPicker.style.borderRadius = '5px';
+      emojiPicker.style.padding = '10px';
+      emojiPicker.style.display = 'flex';
+      emojiPicker.style.flexWrap = 'wrap';
+      emojiPicker.style.zIndex = '1000';
+
+      const emojis = ['❤️', '😂', '😲', '😢', '😠', '👍'];
+      emojis.forEach(emoji => {
+        const emojiButton = document.createElement('button');
+        emojiButton.innerText = emoji;
+        emojiButton.style.fontSize = "20px";
+        emojiButton.style.padding = "5px";
+        emojiButton.style.margin = "5px";
+        emojiButton.style.border = "none";
+        emojiButton.style.backgroundColor = "transparent";
+        emojiButton.style.cursor = "pointer";
+
+        emojiButton.addEventListener('click', () => {
+          const inputField = document.querySelector('textarea') as HTMLTextAreaElement;
+          inputField.value += emoji;
+          this.message = inputField.value;
+          inputField.focus();
+          emojiPicker.remove();
+        });
+        emojiPicker.appendChild(emojiButton);
       });
-      emojiPicker.appendChild(emojiButton);
-    });
-    document.body.appendChild(emojiPicker);
+
+      document.body.appendChild(emojiPicker);
+    }
   }
 }

@@ -8,7 +8,6 @@ import { ChatComponent } from './containers/chat/chat.component';
 import { UsernameComponent } from './components/username/username.component';
 import { AboutComponent } from './containers/about/about.component';
 import { AuthenticateComponent } from './containers/authenticate/authenticate.component';
-import { NavbarComponent } from './components/navbar/navbar.component';
 import { AccountComponent } from './containers/account/account.component';
 import { ProfileComponent } from './containers/profile/profile.component';
 import { FooterComponent } from './components/footer/footer.component';
@@ -23,7 +22,6 @@ import { ToastComponent } from './components/toast/toast.component';
     UsernameComponent,
     AboutComponent,
     AuthenticateComponent,
-    NavbarComponent,
     AccountComponent,
     ProfileComponent,
     FooterComponent,
