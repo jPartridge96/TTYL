@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.groupone.totyl" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>TOTYL</name>
+    <description>A lightweight and secure social messaging app</description>
+    <author email="jordan@meetgroup.one" href="https://meetgroup.one">
+        Jordan Partridge
+    </author>
+    <content src="index.html" />
+    <allow-intent href="http://*/*" />
+    <allow-intent href="https://*/*" />
+    <icon src="icon.png" />
+    <splash src="splash.png" />
+
+</widget>

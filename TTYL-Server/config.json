@@ -1,7 +1,7 @@
 {
     "app": {
         "name": "TOTYL",
-        "description": "A lightweight & secure social messaging app",
+        "description": "A lightweight and secure social messaging app",
         "version": "0.2",
         "authors": [
             "Jordan Partridge",
