@@ -43,3 +43,4 @@ Thumbs.db
 
 # Credentials
 .env.local
+/src/ssl
