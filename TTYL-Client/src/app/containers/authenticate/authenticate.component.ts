@@ -25,17 +25,17 @@ sentVerification: boolean = false;
   }
 
   ngOnInit() {
-    if(sessionStorage.getItem('phone')) {
+    if (sessionStorage.getItem('phone')) {
       this.socket.emit('reload-session', sessionStorage.getItem('phone'));
     }
 
     this.socket.on('restore-session', (data: any) => {
-      if (data) {
-        if(sessionStorage.getItem('phone') == null) {
-          console.log("Phone number is null. Setting phone number to " + this.formattedPh);
-          sessionStorage.setItem("phone", this.formattedPh);
-        }
+      if (sessionStorage.getItem('phone') == null) {
+        console.log("Phone number is null. Setting phone number to " + this.formattedPh);
+        sessionStorage.setItem("phone", this.formattedPh);
+      }
 
+      if (data) {
         sessionStorage.setItem('firstName', data.account.first_name);
         sessionStorage.setItem('lastName', data.account.last_name);
         sessionStorage.setItem('dob', data.account.dob);
