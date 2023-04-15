@@ -78,7 +78,7 @@ function setupSocket(io) {
             delUser(nickname, socket.id);
             socket.broadcast.emit('user-list', [...userList.keys()]);
             socket.emit('user-list', [...userList.keys()]);
-            // writeLog(`${userName} has disconnected (${reason}). [${socket.id}]`);
+            writeLog(`${nickname} has disconnected (${reason}). [${socket.id}]`);
         });
 
         socket.on('get-date', () => {
