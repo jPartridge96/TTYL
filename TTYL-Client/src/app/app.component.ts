@@ -12,7 +12,7 @@ export class AppComponent {
   socket: any;
   ngOnInit() {
     if(this.socket == null) {
-      this.socket = io.io(`https://totyl.ca:3000?nickname=${sessionStorage.getItem('nickname') ? sessionStorage.getItem('nickname') : "anonymous"}`);
+      this.socket = io.io(`https://www.totyl.ca:3000?nickname=${sessionStorage.getItem('nickname') ? sessionStorage.getItem('nickname') : "anonymous"}`);
     }
   }
 }

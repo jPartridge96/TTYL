@@ -34,7 +34,7 @@ async function verifyOtp(phNum, code) {
     return false;
   }
 
-  console.log(`Verifying OTP for ${phNum} with code ${code}`);
+  writeLog(`Verifying OTP for ${phNum} with code ${code}`);
 
   try {
     const verificationCheck = await client.verify.v2.services(serviceSid)

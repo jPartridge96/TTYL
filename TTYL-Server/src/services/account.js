@@ -10,7 +10,7 @@ function createAccountData(data) {
                         VALUES ('${data.accData.phone}', '${data.accData.firstName}', '${data.accData.lastName}', '${data.accData.dob}', '${p_id}')`);
     })
     .then((result) => {
-        console.log(`Account created for '${data.accData.phone}' with ID ${result[0].insertId}`);
+        writeLog(`Account created for '${data.accData.phone}' with ID ${result[0].insertId}`);
         return true;
     })
     .catch((error) => {
