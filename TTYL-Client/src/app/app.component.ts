@@ -16,14 +16,7 @@ export class AppComponent {
       const remoteUrl = `https://www.totyl.ca:3000?nickname=${nickname}`;
       const localUrl = `http://localhost:3000?nickname=${nickname}`;
 
-      this.socket = io.io(localUrl);
-      this.socket.on('connect_error', (error: any) => {
-        if (error) {
-          console.log(`Local server refused to connect. Trying to connect to ${remoteUrl}`);
-          this.socket = io.io(remoteUrl);
-        }
-      });
+      this.socket = io.io(remoteUrl);
     }
   }
-
 }
