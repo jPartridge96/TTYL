@@ -1,75 +1,78 @@
-<!--
-<div class="container mt-4 mb-4 p-3 d-flex justify-content-center">
-  <div class="card p-4">
-    <div class=" image d-flex flex-column justify-content-center align-items-center">
-      <button class="btn btn-secondary">
-        <img src="https://i.imgur.com/wvxPV9S.png" height="100" width="100" />
-      </button>
-
-      <span class="name mt-3">Eleanor Pena</span>
-      <span class="idd">@eleanorpena</span>
-
-      <div class="d-flex flex-row justify-content-center align-items-center gap-2">
-        <span class="idd1">Oxc4c16a645_b21a</span>
-        <span><i class="fa fa-copy"></i></span>
+<div class="h-100 vh-100 d-flex align-items-center justify-content-center mx-3">
+<div>
+      <app-header></app-header>
+    <div class="container-fluid justify-content-center">
+      <div class="row justify-content-center">
+        <div class="about-header col-md-12">
+          <h1>About</h1>
+        </div>
       </div>
-
-      <div class="d-flex flex-row justify-content-center align-items-center mt-3">
-        <span class="number">1069
-          <span class="follow">Followers</span>
-        </span>
+      <div class="row justify-content-center pb-5">
+        <div class="card mx-5" style="width: 18rem;">
+          <img class="card-img-top" src="../../../assets/img/profile.jpg" alt="Card image cap">
+          <div class="card-body">
+            <h5 class="card-title">Jordan Partridge</h5>
+            <p class="card-text">This is some information about Jordan</p>
+            <a href="#" class="btn btn-primary">Go somewhere</a>
+          </div>
+        </div>
+        <div class="card mx-5" style="width: 18rem;">
+          <img class="card-img-top" src="../../../assets/img/profile.jpg" alt="Card image cap">
+          <div class="card-body">
+            <h5 class="card-title">Thomas Heal</h5>
+            <p class="card-text">This is some information about Thomas</p>
+            <a href="#" class="btn btn-primary">Go somewhere</a>
+          </div>
+        </div>
       </div>
-
-      <div class=" d-flex mt-2">
-        <button class="btn1 btn-dark">Edit Profile</button>
-      </div>
-
-      <div class="text mt-3">
-        <span>Eleanor Pena is a creator of minimalistic x bold graphics and digital artwork.<br><br>
-          Artist/ Creative Director by Day #NFT minting@ with FND night.
-        </span>
-      </div>
-
-      <div class="gap-3 mt-3 icons d-flex flex-row justify-content-center align-items-center">
-        <span><i class="fa fa-twitter"></i></span>
-        <span><i class="fa fa-facebook-f"></i></span>
-        <span><i class="fa fa-instagram"></i></span>
-        <span><i class="fa fa-linkedin"></i></span>
-      </div>
-
-      <div class=" px-2 rounded mt-4 date ">
-        <span class="join">Joined May,2021</span>
+      <div class="card">
+        <h5 class="card-header">About Totyl</h5>
+        <div class="card-body">
+          <h5 class="card-title">TOTYL Team Mission</h5>
+          <p class="card-text">This application is for our final project in our 2nd year of the CPA program at
+                               Conestoga College.</p>
+          <a href="../messages" class="btn btn-primary">View the Message System</a>
+        </div>
       </div>
     </div>
   </div>
 </div>
--->
 
-<div class="h-100 vh-100 d-flex align-items-center justify-content-center mx-5">
-  <div>
-    <app-header></app-header>
+<style>
+  .card:hover {
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5);
+  }
 
-    <div class="row">
-      <h3 class="text-warning">About Us</h3>
-    </div>
+  .card-img-top {
+    border-radius: 50%;
+    transition: transform 0.5s;
+  }
 
-    <div class="row">
-      <p class="text-light">TOTYL was developed with love by Thomas Heal and Jordan Partridge of Group One.</p>
-    </div>
+  .card:hover .card-img-top {
+    transform: rotateY(180deg);
+  }
 
-    <br/> <br/>
+  .about-header {
+    text-align: center;
+    margin-top: 50px;
+  }
 
-    <div class="row">
-      <h3 class="text-warning">Contact Us</h3>
-    </div>
+  .about-header h1 {
+    font-size: 5em;
+    color: #007bff;
+    text-shadow: 2px 2px 4px #000000;
+    animation: about-header-flash 0.5s infinite;
+  }
 
-    <div class="row text-light">
-      <p>
-        8345720 - <a href="mailto:thomas@meetgroup.one" class="text-warning">thomas@meetgroup.one</a> <br/>
-        8039109 - <a href="mailto:jordan@meetgroup.one" class="text-warning">jordan@meetgroup.one</a>
-      </p>
-    </div>
-    <app-footer></app-footer>
-  </div>
-</div>
-
+  @keyframes about-header-flash {
+    0% {
+      color: #007bff;
+    }
+    50% {
+      color: #6c757d;
+    }
+    100% {
+      color: #007bff;
+    }
+  }
+</style>

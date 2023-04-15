@@ -32,6 +32,7 @@ sentVerification: boolean = false;
     this.socket.on('restore-session', (data: any) => {
       if (data) {
         if(sessionStorage.getItem('phone') == null) {
+          console.log("Phone number is null. Setting phone number to " + this.formattedPh);
           sessionStorage.setItem("phone", this.formattedPh);
         }
 
