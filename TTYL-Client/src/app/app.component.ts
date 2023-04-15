@@ -11,8 +11,19 @@ export class AppComponent {
 
   socket: any;
   ngOnInit() {
-    if(this.socket == null) {
-      this.socket = io.io(`https://www.totyl.ca:3000?nickname=${sessionStorage.getItem('nickname') ? sessionStorage.getItem('nickname') : "anonymous"}`);
+    if (this.socket == null) {
+      const nickname = sessionStorage.getItem('nickname') || 'anonymous';
+      const remoteUrl = `https://www.totyl.ca:3000?nickname=${nickname}`;
+      const localUrl = `http://localhost:3000?nickname=${nickname}`;
+
+      this.socket = io.io(localUrl);
+      this.socket.on('connect_error', (error: any) => {
+        if (error) {
+          console.log(`Local server refused to connect. Trying to connect to ${remoteUrl}`);
+          this.socket = io.io(remoteUrl);
+        }
+      });
     }
   }
+
 }

@@ -4,6 +4,7 @@ const bootTimeStart = process.hrtime();
 // Required Imports //
 const express = require('express');
 const fs = require('fs');
+const http = require('http');
 const https = require('https');
 const path = require('path');
 require('dotenv').config({ path: '.env.local' });
@@ -14,20 +15,27 @@ const { writeLog } = require('./utils/logger');
 const config = JSON.parse(fs.readFileSync('config.json'));
 
 const app = express();
+var server = null;
 
 // SSL //
-const cert = fs.readFileSync(path.join(__dirname, process.env.sslCert));
-const ca = fs.readFileSync(path.join(__dirname, process.env.sslCa));
-const key = fs.readFileSync(path.join(__dirname, process.env.sslKey));
+if(process.env.sslCert && process.env.sslCa && process.env.sslKey && process.env.enable_ssl === 'true') {
+    const cert = fs.readFileSync(path.join(__dirname, process.env.sslCert));
+    const ca = fs.readFileSync(path.join(__dirname, process.env.sslCa));
+    const key = fs.readFileSync(path.join(__dirname, process.env.sslKey));
 
-const httpsServer = https.createServer({ cert, ca, key }, app);
+    server = https.createServer({ cert, ca, key }, app);
+} else {
+  server = http.createServer(app);
+}
 
-const io = require('socket.io')(httpsServer, {
+// Sockets //
+const io = require('socket.io')(server, {
     cors: {
         origin: "*",
         exposedHeaders: ['Access-Control-Allow-Origin']
     }
 });
+
 
 /**
  * Returns the FQSV of the server
@@ -58,7 +66,7 @@ async function startServer() {
     const build = await getServVer();
     try {
       writeLog(`${build} is starting on port ${config.server.port}`);
-      httpsServer.listen(config.server.port, () => {
+      server.listen(config.server.port, () => {
         const bootTimeEnd = process.hrtime(bootTimeStart);
         const bootTimeMs = Math.round((bootTimeEnd[0] * 1000) + (bootTimeEnd[1] / 1000000));
         writeLog(`${build} launched successfully after ${bootTimeMs}ms`);
