@@ -52,10 +52,16 @@ export class ChatComponent {
 
     openNav.addEventListener('click', () => {
       sidebar.classList.add('active');
+      setTimeout(() => {
+        sidebar.hidden = false;
+      }, 200);
     });
 
     closeNav.addEventListener('click', () => {
       sidebar.classList.remove('active');
+      setTimeout(() => {
+        sidebar.hidden = true;
+      }, 200);
     });
 
     let nick = sessionStorage.getItem('nickname');

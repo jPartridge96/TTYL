@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from "@angular/router";
+import { AppComponent } from "../../app.component";
+
+declare function getAvatar(callback: any): any;
 
 @Component({
   selector: 'app-settings',
@@ -7,18 +10,39 @@ import { Router } from "@angular/router";
   styleUrls: ['./settings.component.css']
 })
 export class SettingsComponent {
-  ngOnInit() {
+  socket: any;
 
+  ngOnInit() {
+    this.socket = this.appComponent.socket;
+
+    // Set the source of the avatar image to the value stored in the session storage
+    const avatarSrc = sessionStorage.getItem('avatar');
+    if (avatarSrc) {
+      console.log(avatarSrc);
+      const avatarImg = document.getElementById('avatar')! as HTMLImageElement;
+      avatarImg.src = "data:image/jpg;base64," + avatarSrc;
+    }
   }
 
-  constructor(private router: Router) {}
+
+  constructor(private appComponent: AppComponent, private router: Router) {}
 
   btnEditPicture_click() {
-    alert("Feature coming soon!");
-    // Use android File permissions to select image from device
-    // Set the image to what the user selects.
+    getAvatar((blob: any) => {
+      this.socket.emit('upload-profile-photo', [sessionStorage.getItem('phone'), blob]);
+    });
+    /* Blob to Img example
+    let reader = new FileReader();
+    reader.readAsDataURL(blob);
+    reader.onloadend = function() {
+      let avatarElement = document.getElementById('avatar') as HTMLImageElement;
+      if (typeof reader.result === 'string') {
+        avatarElement.src = reader.result;
+      }
+    }
+    */
 
-    // Image will be uploaded on emit
+
   }
 
   txtNickname_input(event: any) {
@@ -34,11 +58,20 @@ export class SettingsComponent {
   }
 
   btnDeleteAccount_click() {
-    confirm("Are you sure you want to delete your account?\nIt will be gone forever (a very long time).");
+    let confirmed = confirm("Are you sure you want to delete your account?\nIt will be gone forever (a very long time).");
+
+    if(confirmed) {
+      sessionStorage.clear();
+      this.router.navigate(['/home']);
+    }
   }
 
   btnClearMessages_click() {
-    confirm("Are you sure you want to clear your messages?\nThey will be gone forever (a very long time).");
+    let confirmed = confirm("Are you sure you want to clear all messages?\nThey will be gone forever (a very long time).");
+
+    if(confirmed) {
+      sessionStorage.removeItem('messageList');
+    }
   }
 
   txtFirstName_input(event: any) {

@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import {AppComponent} from "../../app.component";
+import { AppComponent } from "../../app.component";
+
+declare function getAvatar(): any;
 
 @Component({
   selector: 'app-profile',
@@ -45,11 +47,7 @@ export class ProfileComponent {
   }
 
   btnEditPicture_click() {
-    alert("Feature coming soon!");
-    // Use android File permissions to select image from device
-    // Set the image to what the user selects.
-
-    // Image will be uploaded on emit
+    getAvatar();
   }
 
   txtNickname_input(event: any) {

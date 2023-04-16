@@ -130,8 +130,8 @@ body {
 
 #side_nav {
   background: #1b1b1b;
-  min-width: 250px;
-  max-width: 250px;
+  min-width: 300px;
+  max-width: 300px;
   transition: all 0.2s;
   z-index: 1031;
 }
@@ -139,7 +139,7 @@ body {
 .chat-history {
   min-height: 100vh;
   width: 100%;
-  margin-left: 250px;
+  margin-left: 300px;
 }
 
 hr.h-color {
@@ -209,11 +209,11 @@ hr.h-color {
   margin-left: auto;
 }
 nav {
-  margin-left: 250px;
+  margin-left: 300px;
 }
 
 footer {
-  margin-left: 250px;
+  margin-left: 300px;
 }
 
 textarea {
@@ -228,7 +228,7 @@ textarea {
 
 @media(max-width: 767px) {
   #side_nav {
-    margin-left: -250px;
+    margin-left: -300px;
     position: fixed;
     min-height: 100vh;
   }
