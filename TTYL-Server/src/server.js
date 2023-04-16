@@ -86,4 +86,22 @@ async function startServer() {
 app.get('/', (req, res) => {
     getServVer().then((ver) => res.send(ver));
 });
+
+// REST DB IMG
+app.get('/api/image/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const query = `SELECT avatar FROM profiles WHERE id = ${id}`;
+    const results = await db.connection.query(query);
+    const avatarBuffer = results[0][0].avatar;
+    const avatarBase64 = avatarBuffer.toString('base64');
+    const avatarDataUri = `data:image/png;base64,${avatarBase64}`;
+    
+    res.status(200).send(avatarDataUri);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to fetch image data' });
+    console.log(error);
+  }
+});
+
 startServer();

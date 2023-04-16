@@ -19,11 +19,10 @@ export class SettingsComponent {
     const avatarSrc = sessionStorage.getItem('avatar');
     if (avatarSrc) {
       console.log(avatarSrc);
-      const avatarImg = document.getElementById('avatar')! as HTMLImageElement;
+      const avatarImg = document.getElementById('picAvatar')! as HTMLImageElement;
       avatarImg.src = "data:image/jpg;base64," + avatarSrc;
     }
   }
-
 
   constructor(private appComponent: AppComponent, private router: Router) {}
 
@@ -31,18 +30,6 @@ export class SettingsComponent {
     getAvatar((blob: any) => {
       this.socket.emit('upload-profile-photo', [sessionStorage.getItem('phone'), blob]);
     });
-    /* Blob to Img example
-    let reader = new FileReader();
-    reader.readAsDataURL(blob);
-    reader.onloadend = function() {
-      let avatarElement = document.getElementById('avatar') as HTMLImageElement;
-      if (typeof reader.result === 'string') {
-        avatarElement.src = reader.result;
-      }
-    }
-    */
-
-
   }
 
   txtNickname_input(event: any) {
@@ -62,6 +49,9 @@ export class SettingsComponent {
 
     if(confirmed) {
       sessionStorage.clear();
+
+      this.socket.emit('delete-account', sessionStorage.getItem('phone'));
+
       this.router.navigate(['/home']);
     }
   }

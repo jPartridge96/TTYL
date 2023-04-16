@@ -5,7 +5,7 @@ function getAvatar(success){
     destinationType: Camera.DestinationType.DATA_URL
   }
   function onSuccess(imageData) {
-    var image = $("#avatar");
+    var image = $("#picAvatar");
     image.prop('src', "data:image/jpeg;base64," + imageData);
 
     let byteString = atob(imageData);
