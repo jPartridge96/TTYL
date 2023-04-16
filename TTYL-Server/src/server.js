@@ -88,7 +88,7 @@ app.get('/', (req, res) => {
 });
 
 // REST DB IMG
-app.get('/api/image/:id', async (req, res) => {
+app.get('/api/avatar/:id', async (req, res) => {
   try {
     const id = req.params.id;
     const query = `SELECT avatar FROM profiles WHERE id = ${id}`;
