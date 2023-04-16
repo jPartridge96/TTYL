@@ -11,11 +11,14 @@ export class SettingsComponent {
 
   }
 
-  constructor(private router: Router) {
-  }
+  constructor(private router: Router) {}
 
   btnEditPicture_click() {
+    alert("Feature coming soon!");
+    // Use android File permissions to select image from device
+    // Set the image to what the user selects.
 
+    // Image will be uploaded on emit
   }
 
   txtNickname_input(event: any) {
