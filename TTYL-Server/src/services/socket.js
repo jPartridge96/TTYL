@@ -2,7 +2,7 @@ const { writeLog } = require('../utils/logger');
 const { onMessageReceived } = require('../services/chat');
 const { verifyOtp, sendOtp } = require('../utils/otp');
 const { createAccountData, readAccountData } = require('../services/account');
-const { readProfileData } = require('../services/profile');
+const { readProfileData, updateProfilePhoto } = require('../services/profile');
 
 let userList = new Map();
 
@@ -87,7 +87,14 @@ function setupSocket(io) {
             const formattedTimestamp = timestamp.replace(',', '');
             socket.emit('date', formattedTimestamp);
         });
-    });
+
+        socket.on('upload-profile-photo', ([phNum, blob]) => {
+            readAccountData(phNum)
+                .then((account) => {
+                    updateProfilePhoto(blob, account.p_id);
+                });
+            });
+        });
 }
 
 // Deprecated?

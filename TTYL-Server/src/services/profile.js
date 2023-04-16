@@ -21,4 +21,16 @@ function readProfileData(p_id) {
     });
 }
 
-module.exports = { readProfileData };
+async function updateProfilePhoto(blob, p_id) {
+    try {
+      const query = 'UPDATE profiles SET avatar = ? WHERE id = ?';
+      const params = [blob, p_id];
+      await db.query(query, params);
+      console.log('Profile photo updated successfully');
+    } catch (err) {
+      console.error('Error updating profile photo:', err);
+    }
+  }
+  
+
+module.exports = { readProfileData, updateProfilePhoto };
