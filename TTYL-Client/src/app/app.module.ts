@@ -14,6 +14,7 @@ import { FooterComponent } from './components/footer/footer.component';
 import { ErrorComponent } from './containers/error/error.component';
 import { HeaderComponent } from './components/header/header.component';
 import { ToastComponent } from './components/toast/toast.component';
+import { SettingsComponent } from './containers/settings/settings.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { ToastComponent } from './components/toast/toast.component';
     FooterComponent,
     ErrorComponent,
     HeaderComponent,
-    ToastComponent
+    ToastComponent,
+    SettingsComponent
   ],
   imports: [
     BrowserModule,

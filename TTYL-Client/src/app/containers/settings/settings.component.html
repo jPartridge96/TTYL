@@ -1,0 +1,45 @@
+<div class="h-100 min-vh-100 d-flex align-items-center justify-content-center mx-4">
+  <div class="container pt-4">
+    <app-header></app-header>
+
+    <div class="mb-3 d-flex justify-content-center">
+      <div class="position-relative">
+        <img src="../../../assets/img/profile.jpg" alt="Profile Picture" class="rounded-circle profile-image" />
+        <div id="btnEditPicture" class="edit-icon" (click)="btnEditPicture_click()">
+          <i class="fa fa-pencil edit-icon"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-4 d-flex justify-content-center">
+      <input  id="txtNickname" type="text" class=" text-border-bottom text-white" placeholder="Nickname (optional)" (input)="txtNickname_input($event)">
+    </div>
+
+    <div class="mb-2 d-flex justify-content-center">
+      <input type="text" id="txtFirstName" class="text-border-bottom text-white" placeholder="First Name" minlength="2" (input)="txtFirstName_input($event)">
+    </div>
+
+    <div class="mb-3 d-flex justify-content-center">
+      <input type="text" id="txtLastName" class="text-border-bottom text-white" placeholder="Last Name" minlength="2" (input)="txtLastName_input($event)">
+    </div>
+
+    <div class="mb-2 d-flex justify-content-center">
+      <div>
+        <button id="btnBack" class="btn text-white btn-sm m-2 mx-5" style="background-color: #454545" (click)="btnBack_click()">Back</button>
+        <button id="btnSave" class="btn text-white btn-sm m-2 mx-5" style="background-color: #454545" (click)="btnSave_click()">Save</button>
+      </div>
+    </div>
+
+    <div class="text-white col-3 mx-auto">
+      <hr/>
+
+      <div class="mb-3 justify-content-center mx-auto">
+        <h5 class="text-white mb-3">Advanced Settings</h5>
+        <div class="d-flex justify-content-between">
+          <button id="btnDelete" class="btn btn-outline-danger m-2" (click)="btnDelete_click()">Delete Account</button>
+          <button id="btnLogout" class="btn btn-outline-warning m-2" (click)="btnLogout_click()">Clear Messages</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

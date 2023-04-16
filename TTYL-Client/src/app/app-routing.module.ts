@@ -6,6 +6,7 @@ import { AuthenticateComponent } from "./containers/authenticate/authenticate.co
 import { AccountComponent } from "./containers/account/account.component";
 import { ProfileComponent } from "./containers/profile/profile.component";
 import { ErrorComponent } from "./containers/error/error.component";
+import { SettingsComponent } from "./containers/settings/settings.component";
 
 const routes: Routes = [
   { path: 'authenticate', component: AuthenticateComponent },
@@ -13,7 +14,8 @@ const routes: Routes = [
   { path: 'edit-profile', component: ProfileComponent },
   { path: 'messages', component: ChatComponent },
 
-  { path: 'about', component: AboutComponent},
+  { path: 'about', component: AboutComponent },
+  { path: 'settings', component: SettingsComponent },
 
   { path: 'home', component: AuthenticateComponent },
   { path: '', redirectTo: '/home', pathMatch: 'full'},
