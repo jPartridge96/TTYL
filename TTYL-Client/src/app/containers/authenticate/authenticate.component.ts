@@ -39,15 +39,22 @@ sentVerification: boolean = false;
         sessionStorage.setItem('firstName', data.account.first_name);
         sessionStorage.setItem('lastName', data.account.last_name);
         sessionStorage.setItem('dob', data.account.dob);
-
-        // query and load profile data
-        sessionStorage.setItem('avatar', data.profile.avatar);
         sessionStorage.setItem('nickname', data.profile.nickname);
+
+        // const reader = new FileReader();
+        // reader.onload = () => {
+        //   const base64Data = btoa(data.profile.avatar as string);
+        //   sessionStorage.setItem('avatar', base64Data);
+        //   this.router.navigate(['/messages']);
+        // };
+        //
+        // reader.readAsBinaryString(data.profile.avatar);
 
         this.router.navigate(['/messages']);
       } else {
         this.router.navigate(['/create-account']);
       }
+
     });
   }
 
