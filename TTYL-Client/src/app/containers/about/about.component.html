@@ -1,78 +1,83 @@
-<div class="h-100 vh-100 d-flex align-items-center justify-content-center mx-3">
-<div>
-      <app-header></app-header>
-    <div class="container-fluid justify-content-center">
-      <div class="row justify-content-center">
-        <div class="about-header col-md-12">
-          <h1>About</h1>
+<div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+  <h1 class="display-4">
+    <span class="" style="color:yellow">About</span>
+    <span class="" style="color:cornflowerblue">Us</span>
+  </h1>
+</div>
+<div class="container">
+  <div class="card-deck mb-3 text-center">
+      <div class="card mb-4 shadow-sm">
+        <div class="card-header">
+          <h4 class="my-0 font-weight-normal">Jordan Partridge</h4>
         </div>
-      </div>
-      <div class="row justify-content-center pb-5">
-        <div class="card mx-5" style="width: 18rem;">
-          <img class="card-img-top" src="../../../assets/img/profile.jpg" alt="Card image cap">
-          <div class="card-body">
-            <h5 class="card-title">Jordan Partridge</h5>
-            <p class="card-text">This is some information about Jordan</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
-          </div>
-        </div>
-        <div class="card mx-5" style="width: 18rem;">
-          <img class="card-img-top" src="../../../assets/img/profile.jpg" alt="Card image cap">
-          <div class="card-body">
-            <h5 class="card-title">Thomas Heal</h5>
-            <p class="card-text">This is some information about Thomas</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
-          </div>
-        </div>
-      </div>
-      <div class="card">
-        <h5 class="card-header">About Totyl</h5>
         <div class="card-body">
-          <h5 class="card-title">TOTYL Team Mission</h5>
-          <p class="card-text">This application is for our final project in our 2nd year of the CPA program at
-                               Conestoga College.</p>
-          <button type="button" class="btn btn-primary" (click)="btnMessages_click()">View the Message System</button>
+          <h1 class="card-title">FoolProof Programmer <small class="text-muted"> ...sortof</small></h1>
+          <ul class="list-unstyled mt-3 mb-4">
+            <li>Has impeccable skills</li>
+            <li>Likes to chew bubble gum...</li>
+            <li>Is all out of bubble gum.</li>
+            <li>Can also do some sweet OTP</li>
+          </ul>
+<!--          <button type="button" class="btn btn-lg btn-block btn-outline-primary">Sign up for free</button>-->
+            <img class="card-img-top" src="../../../assets/img/profile.jpg" alt="Jordan" style="width: 50%">
+
         </div>
+      </div>
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header">
+        <h4 class="my-0 font-weight-normal">Jordan Partridge</h4>
+      </div>
+      <div class="card-body">
+        <h1 class="card-title">FoolProof Programmer <small class="text-muted"> ...sortof</small></h1>
+        <ul class="list-unstyled mt-3 mb-4">
+          <li>Has impeccable skills</li>
+          <li>Likes to chew bubble gum...</li>
+          <li>Is all out of bubble gum.</li>
+          <li>Can also do some sweet OTP</li>
+        </ul>
+        <!--          <button type="button" class="btn btn-lg btn-block btn-outline-primary">Sign up for free</button>-->
+        <img class="card-img-top" src="../../../assets/img/profile.jpg" alt="Jordan" style="width: 50%">
       </div>
     </div>
   </div>
 </div>
+<app-footer></app-footer>
 
 <style>
-  .card:hover {
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5);
+  /* Set a default layout for the cards */
+  .card-deck {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
-  .card-img-top {
-    border-radius: 50%;
-    transition: transform 0.5s;
+  /* Set the background color of the cards */
+  .card {
+    background-color: #1b1b1b;
   }
 
-  .card:hover .card-img-top {
-    transform: rotateY(180deg);
+  /* Set the text color of the headers to yellow */
+  .card-header, .card-title, .card-text {
+    color: yellow;
   }
 
-  .about-header {
-    text-align: center;
-    margin-top: 50px;
+  /* Set the text color of the list items to white */
+  .list-unstyled li {
+    color: white;
   }
 
-  .about-header h1 {
-    font-size: 5em;
-    color: #007bff;
-    text-shadow: 2px 2px 4px #000000;
-    animation: about-header-flash 0.5s infinite;
-  }
-
-  @keyframes about-header-flash {
-    0% {
-      color: #007bff;
+  /* On screens wider than 768px, display the cards horizontally */
+  @media (min-width: 768px) {
+    .card-deck {
+      flex-direction: row;
     }
-    50% {
-      color: #6c757d;
-    }
-    100% {
-      color: #007bff;
+    .card {
+      margin-right: 15px;
+      margin-left: 15px;
+      max-width: calc(50% - 30px);
     }
   }
+
+
+
 </style>
