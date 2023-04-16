@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { AppComponent } from "../../app.component";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-chat',
@@ -23,7 +24,7 @@ export class ChatComponent {
   userList: string[] = [];
   socket: any;
 
-  constructor(private appComponent: AppComponent) {
+  constructor(private appComponent: AppComponent, private router: Router) {
     this.socket = appComponent.socket;
 
     // Retrieve the message list from session storage
@@ -37,6 +38,7 @@ export class ChatComponent {
     const sidebarMessages = document.querySelectorAll<HTMLElement>(".messages li");
     const sidebar = document.querySelector<HTMLElement>(".sidebar")!;
     const openNav = document.querySelector<HTMLElement>(".open-btn")!;
+    const closeNav = document.querySelector<HTMLElement>(".close-btn")!;
 
     sidebarMessages.forEach(conversation => {
       conversation.addEventListener('click', () => {
@@ -50,6 +52,10 @@ export class ChatComponent {
 
     openNav.addEventListener('click', () => {
       sidebar.classList.add('active');
+    });
+
+    closeNav.addEventListener('click', () => {
+      sidebar.classList.remove('active');
     });
 
     let nick = sessionStorage.getItem('nickname');
@@ -69,28 +75,6 @@ export class ChatComponent {
     });
     this.currentChatUser = nick!;
   }
-
-  //
-  //
-  // userNameUpdate(name: string):void {
-  //   this.socket = io.io(`localhost:3000?userName=${name}`); // Change to backend IP when hosting publicly
-  //   this.userName = name;
-  //
-  //   this.socket.emit('set-user-name', name);
-  //
-  //   this.socket.on('user-list', (userList: string[]) => {
-  //     this.userList = userList;
-  //   });
-  //
-  //   this.socket.on('message-broadcast', (data: {message: string, userName: string}) => {
-  //     if(data) {
-  //       const isSender = data.userName === this.userName;
-  //       this.messageList.push({message: data.message, userName: data.userName, isSender: isSender});
-  //     }
-  //   });
-  //
-  //   this.currentChatUser = name;
-  // }
 
   sendMessage(chatUser: string):void {
     if (!this.currentChatUser) {
@@ -131,8 +115,6 @@ export class ChatComponent {
     if (emojiPickerEle) {
       emojiPickerEle.remove();
     } else {
-
-
       const emojiPicker = document.createElement('div');
       emojiPicker.classList.add('emoji-picker');
       emojiPicker.style.position = 'fixed';
@@ -166,8 +148,20 @@ export class ChatComponent {
         });
         emojiPicker.appendChild(emojiButton);
       });
-
       document.body.appendChild(emojiPicker);
     }
+  }
+
+  btnSettings_click() {
+    this.router.navigate(['/settings']);
+  }
+
+  btnAbout_click() {
+    this.router.navigate(['/about']);
+  }
+
+  btnLogout_click() {
+    sessionStorage.clear();
+    this.router.navigate(['/home']);
   }
 }

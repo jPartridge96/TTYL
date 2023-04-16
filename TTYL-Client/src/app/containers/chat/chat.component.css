@@ -132,6 +132,8 @@ body {
   background: #000;
   min-width: 250px;
   max-width: 250px;
+  transition: all 0.2s;
+  z-index: 1031;
 }
 
 .chat-history {
@@ -229,12 +231,11 @@ textarea {
     margin-left: -250px;
     position: fixed;
     min-height: 100vh;
-    z-index: 1;
   }
   nav {
     margin-left: 0px;
   }
-  #side_name.active {
+  #side_nav.active {
     margin-left: 0;
   }
   footer {
