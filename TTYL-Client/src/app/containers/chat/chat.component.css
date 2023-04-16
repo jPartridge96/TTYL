@@ -129,7 +129,7 @@ body {
 }
 
 #side_nav {
-  background: #000;
+  background: #1b1b1b;
   min-width: 250px;
   max-width: 250px;
   transition: all 0.2s;

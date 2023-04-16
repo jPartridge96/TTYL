@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-settings',
@@ -10,6 +11,9 @@ export class SettingsComponent {
 
   }
 
+  constructor(private router: Router) {
+  }
+
   btnEditPicture_click() {
 
   }
@@ -19,19 +23,19 @@ export class SettingsComponent {
   }
 
   btnBack_click() {
-
+    this.router.navigate(['/messages']);
   }
 
   btnSave_click() {
-
+    this.router.navigate(['/messages'])
   }
 
-  btnDelete_click() {
-
+  btnDeleteAccount_click() {
+    confirm("Are you sure you want to delete your account?\nIt will be gone forever (a very long time).");
   }
 
-  btnLogout_click() {
-
+  btnClearMessages_click() {
+    confirm("Are you sure you want to clear your messages?\nThey will be gone forever (a very long time).");
   }
 
   txtFirstName_input(event: any) {
@@ -39,14 +43,6 @@ export class SettingsComponent {
   }
 
   txtLastName_input(event: any) {
-
-  }
-
-  cmbCountryCode_change(event: any) {
-
-  }
-
-  txtPhoneNumber_input(event: any) {
 
   }
 }

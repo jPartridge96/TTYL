@@ -1,6 +1,5 @@
 <div class="h-100 min-vh-100 d-flex align-items-center justify-content-center mx-4">
   <div class="container pt-4">
-    <app-header></app-header>
 
     <div class="mb-3 d-flex justify-content-center">
       <div class="position-relative">
@@ -30,14 +29,14 @@
       </div>
     </div>
 
-    <div class="text-white col-3 mx-auto">
+    <div class="text-white col-lg-4 col-md-6 col-sm-7 mx-auto">
       <hr/>
 
       <div class="mb-3 justify-content-center mx-auto">
         <h5 class="text-white mb-3">Advanced Settings</h5>
         <div class="d-flex justify-content-between">
-          <button id="btnDelete" class="btn btn-outline-danger m-2" (click)="btnDelete_click()">Delete Account</button>
-          <button id="btnLogout" class="btn btn-outline-warning m-2" (click)="btnLogout_click()">Clear Messages</button>
+          <button id="btnDelete" class="btn btn-outline-danger m-2" (click)="btnDeleteAccount_click()">Delete Account</button>
+          <button id="btnLogout" class="btn btn-outline-warning m-2" (click)="btnClearMessages_click()">Clear Messages</button>
         </div>
       </div>
     </div>
