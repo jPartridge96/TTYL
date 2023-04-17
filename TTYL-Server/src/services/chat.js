@@ -13,10 +13,9 @@ function onMessageReceived(socket, nickname, msg) {
     const formattedTimestamp = timestamp.replace(',', '');
 
     if (msg.startsWith('/')) // Pass to commands.js if message starts with '/'
-        CommandHandler(socket, msg, utcTimestamp);
+        CommandHandler(socket, msg);
     else {
-        socket.broadcast.emit('message-broadcast', { message: msg, nickname: nickname, timestamp: formattedTimestamp });
-        // socket.emit('message-broadcast', { message: msg, userName: userName, timestamp: formattedTimestamp });
+        socket.broadcast.emit('message-broadcast', { message: msg, nickname: nickname});
         writeLog(`[${formattedTimestamp}] ${nickname}: ${msg}`);
     }
 }
@@ -25,8 +24,9 @@ function onMessageReceived(socket, nickname, msg) {
  * Handle message edited
  */
 function onMessageEdit() {
-    // When the user edits a message, the message is deleted and a new message is sent
+
 }
+
 /**
  * Handle message reply
  */
