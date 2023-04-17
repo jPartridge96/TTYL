@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { AppComponent } from "../../app.component";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
+import {timestamp} from "rxjs";
 
 @Component({
   selector: 'app-chat',
@@ -20,7 +21,7 @@ export class ChatComponent {
 
   nickname = "";
   message = "";
-  messageList: {message: string, nickname: string, isSender: boolean}[] = [];
+  messageList: {message: string, nickname: string, isSender: boolean, timestamp: string}[] = [];
   userList: string[] = [];
   socket: any;
 
@@ -73,10 +74,10 @@ export class ChatComponent {
       this.userList = userList;
     });
 
-    this.socket.on('message-broadcast', (data: {message: string, nickname: string}) => {
+    this.socket.on('message-broadcast', (data: {message: string, nickname: string, timestamp: string}) => {
       if(data) {
         const isSender = data.nickname === this.nickname;
-        this.messageList.push({message: data.message, nickname: data.nickname, isSender: isSender});
+        this.messageList.push({message: data.message, nickname: data.nickname, isSender: isSender, timestamp: data.timestamp});
       }
     });
     this.currentChatUser = nick!;
@@ -100,18 +101,23 @@ export class ChatComponent {
       msg: this.message
     });
 
+    const now = new Date();
+    const hours = now.getHours() % 12 || 12; // convert to 12-hour format
+    const minutes = now.getMinutes().toString().padStart(2, '0'); // add leading zero if necessary
+    const ampm = now.getHours() < 12 ? 'AM' : 'PM'; // determine AM/PM
+
+
     // Only push the message as a my-message if it's from the current user
     if (isSender) {
-      this.messageList.push({ message: this.message, nickname: this.nickname, isSender: true });
+      this.messageList.push({ message: this.message, nickname: this.nickname, isSender: true, timestamp: `${hours}:${minutes} ${ampm}` });
     } else {
-      this.messageList.push({ message: this.message, nickname: chatUser, isSender: false });
+       this.messageList.push({ message: this.message, nickname: chatUser, isSender: false, timestamp: `${hours}:${minutes} ${ampm}` });
     }
 
     // Save the message list to session storage
     sessionStorage.setItem('messageList', JSON.stringify(this.messageList));
-
-    this.message = '';
     window.scrollTo(0, document.body.scrollHeight);
+    this.message = '';
   }
 
 

@@ -15,7 +15,7 @@
           </div>
 
           <div class="m-auto text-center px-3 mb-3">
-            <i class="fa-solid fa-circle fa-fade fa-2xs" style="color: #00c200;"></i> Profile Name <br/>
+            <i class="fa-solid fa-circle fa-fade fa-2xs" style="color: #00c200;"></i> Username <br/>
             +1 123 456 7890
           </div>
 
@@ -41,6 +41,7 @@
 
     <hr class="h-color mx-4">
     <ul class="messages list-unstyled px-2">
+      <!-- First user example -->
       <li class="active">
         <a class="text-decoration-none px-3 py-2 d-block d-flex">
           <span style="display: flex; align-items: center; justify-content: center;">
@@ -48,12 +49,46 @@
           </span>
 
           <span>
-            <strong><small>Profile Name</small></strong> <br/>
+            <strong><small>Username</small></strong> <br/>
+            <small><small>A message from the user</small></small>
+          </span>
+        </a>
+        <span class="badge right">
+              <span class="bg-dark rounded-pill text-white py-1 px-2" hidden>00</span>
+            </span>
+      </li>
+
+      <!-- Second user example -->
+      <li class="">
+        <a class="text-decoration-none px-3 py-2 d-block d-flex">
+          <span style="display: flex; align-items: center; justify-content: center;">
+            <img src="../../../assets/img/profile.jpg" alt="avatar" class="rounded-circle profile-image img-thumbnail" style="width: 48px;">
+          </span>
+
+          <span>
+            <strong><small>Username</small></strong> <br/>
             <small><small>A message from the user</small></small>
           </span>
         </a>
         <span class="badge right">
               <span class="bg-dark rounded-pill text-white py-1 px-2">01</span>
+            </span>
+      </li>
+
+      <!-- Third user example -->
+      <li class="">
+        <a class="text-decoration-none px-3 py-2 d-block d-flex">
+          <span style="display: flex; align-items: center; justify-content: center;">
+            <img src="../../../assets/img/profile.jpg" alt="avatar" class="rounded-circle profile-image img-thumbnail" style="width: 48px;">
+          </span>
+
+          <span>
+            <strong><small>Username</small></strong> <br/>
+            <small><small>A message from the user</small></small>
+          </span>
+        </a>
+        <span class="badge right">
+              <span class="bg-dark rounded-pill text-white py-1 px-2">07</span>
             </span>
       </li>
     </ul>
@@ -73,7 +108,7 @@
       </div>
 
       <div class="m-auto text-center px-3">
-        <i class="fa-solid fa-circle fa-fade fa-2xs" style="color: #00c200;"></i> Profile Name
+        <i class="fa-solid fa-circle fa-fade fa-2xs" style="color: #00c200;"></i> Username
       </div>
 
       <span class="d-flex navbar-text" data-bs-toggle="modal" data-bs-target="#profileModal">
@@ -82,13 +117,13 @@
     </div>
   </nav>
 
-  <main class="chat-history mt-4 mb-3 pb-5">
-    <ul class="m-b-0 list-unstyled">
+  <main class="chat-history py-5">
+    <ul class="m-b-0 list-unstyled py-3">
       <li class="clearfix" *ngFor="let msg of messageList">
         <div class="message-data" [ngClass]="{'text-left': !msg.isSender, 'text-right': msg.isSender}">
           <div class="message-data-time" [ngClass]="{'float-left': !msg.isSender, 'float-right': msg.isSender}">
             <span class="username">{{ msg.nickname }}</span>
-            <span class="message-data-time text-muted">9:25 PM</span>
+            <span class="message-data-time text-muted">{{ msg.timestamp }}</span>
           </div>
           <div class="message" [ngClass]="{'my-message': msg.isSender, 'other-message': !msg.isSender}">
             {{ msg.message }}
