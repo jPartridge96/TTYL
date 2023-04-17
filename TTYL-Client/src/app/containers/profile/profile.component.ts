@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AppComponent } from "../../app.component";
 
-declare function getAvatar(): any;
+declare function getAvatar(callback: any): any;
 
 @Component({
   selector: 'app-profile',
@@ -11,6 +11,9 @@ declare function getAvatar(): any;
 })
 export class ProfileComponent {
   socket: any;
+
+  avatarBlob: string = "";
+  avatarDataUri: string = "../../../assets/img/profile.jpg";
 
   phone: string = "";
   firstName: string = "";
@@ -33,7 +36,6 @@ export class ProfileComponent {
     this.lastName = sessionStorage.getItem("lastName")!;
     this.dob = sessionStorage.getItem("dob");
 
-    this.avatar = null;
     this.nickname = `${this.firstName} ${this.lastName}`;
   }
   btnSkip_click() {
@@ -47,7 +49,9 @@ export class ProfileComponent {
   }
 
   btnEditPicture_click() {
-    getAvatar();
+    getAvatar((blob: any) => {
+      this.avatarBlob = blob;
+    });
   }
 
   txtNickname_input(event: any) {
@@ -59,13 +63,6 @@ export class ProfileComponent {
     } else {
       this.nickname = `${this.firstName} ${this.lastName}`;
     }
-
-    // If minlength is matched, enable button
-    // Trim spaces
-    // If nickname is empty on submit, first and last name will be used
-
-    // How will account data be passed to user after creation?
-    // let nick = `${acc.firstName} ${acc.lastName}`;
   }
 
   emitCreateAccount() {
@@ -79,7 +76,7 @@ export class ProfileComponent {
         "dob": this.dob
       },
       profData: {
-        "avatar": this.avatar,
+        "avatar": this.avatarBlob,
         "nickname": this.nickname
       }
     });

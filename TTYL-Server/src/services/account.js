@@ -1,9 +1,9 @@
 const { writeLog } = require('../utils/logger');
 const db = require('../utils/database');
+const { createProfileData } = require('./profile');
 
 function createAccountData(data) {
-    return db.query(`INSERT INTO profiles (nickname, avatar)
-                    VALUES ('${data.profData.nickname}', NULL)`)
+    createProfileData(data.profData)
     .then((result) => {
         const p_id = result[0].insertId;
         return db.query(`INSERT INTO accounts (phone, first_name, last_name, dob, p_id)
@@ -20,6 +20,10 @@ function createAccountData(data) {
 }
 
 function readAccountData(phNum) {
+    if(!phNum) {
+        return false;
+    }
+
     return db.query(`SELECT * FROM accounts WHERE phone='${phNum}'`)
     .then((rows) => {
         if (rows.length > 0) {
@@ -35,12 +39,23 @@ function readAccountData(phNum) {
     });
 }
 
-function updateAccountData() {
+function updateAccountData(id, account) {
+    if(!id) {
+        return false;
+    }
 
-}
-
-function deleteAccountData() {
+    return db.query(`UPDATE accounts SET first_name = '${account.firstName}', first_name = '${account.lastName}' WHERE id = ${id}`)
+    .then(writeLog(`An account with ID '${id}' has been updated`));
     
 }
 
-module.exports = { readAccountData, createAccountData };
+function deleteAccountData(id) {
+    if(!id) {
+        return false;
+    }
+
+    return db.query(`DELETE FROM accounts WHERE id = ${id};`)
+    .then(writeLog(`An account with ID '${id}' has been deleted`));
+}
+
+module.exports = { createAccountData, readAccountData, updateAccountData, deleteAccountData };

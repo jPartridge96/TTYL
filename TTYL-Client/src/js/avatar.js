@@ -19,7 +19,7 @@ function getAvatar(success){
   }
 
   function onFail(err) {
-    if(err.message === 'undefined') {
+    if(err.message.contains('undefined')) {
       return;
     }
     alert(err.message);

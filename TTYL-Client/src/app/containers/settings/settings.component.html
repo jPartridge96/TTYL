@@ -3,7 +3,7 @@
 
     <div class="mb-3 d-flex justify-content-center">
       <div class="position-relative">
-        <img id="avatar" src="../../../assets/img/profile.jpg" alt="Profile Picture" class="rounded-circle profile-image" />
+        <img id="picAvatar" [src]="avatarDataUri" alt="Profile Picture" class="rounded-circle profile-image" />
         <div id="btnEditPicture" class="edit-icon" (click)="btnEditPicture_click()">
           <i class="fa fa-pencil edit-icon"></i>
         </div>
@@ -11,21 +11,21 @@
     </div>
 
     <div class="mb-4 d-flex justify-content-center">
-      <input  id="txtNickname" type="text" class=" text-border-bottom text-white" placeholder="Nickname (optional)" (input)="txtNickname_input($event)">
+      <input  id="txtNickname" type="text" class=" text-border-bottom text-white" placeholder="Nickname (optional)" [value]="txtNickname_value()">
     </div>
 
     <div class="mb-2 d-flex justify-content-center">
-      <input type="text" id="txtFirstName" class="text-border-bottom text-white" placeholder="First Name" minlength="2" (input)="txtFirstName_input($event)">
+      <input type="text" id="txtFirstName" class="text-border-bottom text-white" placeholder="First Name" minlength="2" (input)="txtFirstName_input($event)" [value]="txtFirstName_value()">
     </div>
 
     <div class="mb-3 d-flex justify-content-center">
-      <input type="text" id="txtLastName" class="text-border-bottom text-white" placeholder="Last Name" minlength="2" (input)="txtLastName_input($event)">
+      <input type="text" id="txtLastName" class="text-border-bottom text-white" placeholder="Last Name" minlength="2" (input)="txtLastName_input($event)" [value]="txtLastName_value()">
     </div>
 
     <div class="mb-2 d-flex justify-content-center">
       <div>
         <button id="btnBack" class="btn text-white btn-sm m-2 mx-5" style="background-color: #454545" (click)="btnBack_click()">Back</button>
-        <button id="btnSave" class="btn text-white btn-sm m-2 mx-5" style="background-color: #454545" (click)="btnSave_click()">Save</button>
+        <button id="btnSave" class="btn text-white btn-sm m-2 mx-5" style="background-color: #454545" [disabled]="!isFormValid" (click)="btnSave_click()">Save</button>
       </div>
     </div>
 

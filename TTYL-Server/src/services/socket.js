@@ -1,8 +1,9 @@
 const { writeLog } = require('../utils/logger');
 const { onMessageReceived } = require('../services/chat');
 const { verifyOtp, sendOtp } = require('../utils/otp');
-const { createAccountData, readAccountData } = require('../services/account');
-const { readProfileData, updateProfilePhoto } = require('../services/profile');
+const { createAccountData, readAccountData, updateAccountData, deleteAccountData } = require('../services/account');
+const { createProfileData, readProfileData, updateProfilePhoto, updateProfileData, deleteProfileData } = require('../services/profile');
+const db = require('../utils/database');
 
 let userList = new Map();
 
@@ -81,20 +82,52 @@ function setupSocket(io) {
             writeLog(`${nickname} has disconnected (${reason}). [${socket.id}]`);
         });
 
-        socket.on('get-date', () => {
-            const utcTimestamp = new Date().toUTCString();
-            const timestamp = new Date(utcTimestamp).toLocaleString('en-US', {hour12: false});
-            const formattedTimestamp = timestamp.replace(',', '');
-            socket.emit('date', formattedTimestamp);
-        });
-
-        socket.on('upload-profile-photo', ([phNum, blob]) => {
+        socket.on('upload-avatar', ([phNum, blob]) => {
             readAccountData(phNum)
-                .then((account) => {
-                    updateProfilePhoto(blob, account.p_id);
-                });
+            .then((account) => {
+                updateProfilePhoto(blob, account.p_id);
             });
         });
+        
+        socket.on('retrieve-avatar', (phNum) => {
+            readAccountData(phNum)
+            .then(async (acc) => {
+                try {
+                    const query = `SELECT avatar FROM profiles WHERE id = ${acc.p_id}`;
+                    const results = await db.connection.query(query);
+                    
+                    if(results){
+                        const avatarBuffer = results[0][0].avatar;
+                        const avatarBase64 = avatarBuffer.toString('base64');
+                        const avatarDataUri = `data:image/png;base64,${avatarBase64}`;
+                        
+                        socket.emit('send-avatar', avatarDataUri);
+                    } else {
+                        return false;
+                    }
+                } catch (error) {
+                    socket.emit('send-avatar', false)
+                    writeLog(error);
+                }
+            });
+        });
+
+        socket.on('update-account', ([phNum, account, profile]) => {
+            readAccountData(phNum)
+            .then((acc) => {
+                updateAccountData(acc.id, account);
+                updateProfileData(acc.p_id, profile);
+            })
+        });
+
+        socket.on('delete-account', (phNum) => {
+            readAccountData(phNum)
+            .then((acc) => {
+                deleteAccountData(acc.id);
+                deleteProfileData(acc.p_id);
+            });
+        });
+    });
 }
 
 // Deprecated?
