@@ -74,10 +74,10 @@ export class ChatComponent {
       this.userList = userList;
     });
 
-    this.socket.on('message-broadcast', (data: {message: string, nickname: string, timestamp: string}) => {
+    this.socket.on('message-broadcast', (data: {message: string, nickname: string}) => {
       if(data) {
         const isSender = data.nickname === this.nickname;
-        this.messageList.push({message: data.message, nickname: data.nickname, isSender: isSender, timestamp: data.timestamp});
+        this.messageList.push({message: data.message, nickname: data.nickname, isSender: isSender, timestamp: this.getCurrentTime()});
       }
     });
     this.currentChatUser = nick!;
@@ -101,17 +101,11 @@ export class ChatComponent {
       msg: this.message
     });
 
-    const now = new Date();
-    const hours = now.getHours() % 12 || 12; // convert to 12-hour format
-    const minutes = now.getMinutes().toString().padStart(2, '0'); // add leading zero if necessary
-    const ampm = now.getHours() < 12 ? 'AM' : 'PM'; // determine AM/PM
-
-
     // Only push the message as a my-message if it's from the current user
     if (isSender) {
-      this.messageList.push({ message: this.message, nickname: this.nickname, isSender: true, timestamp: `${hours}:${minutes} ${ampm}` });
+      this.messageList.push({ message: this.message, nickname: this.nickname, isSender: true, timestamp: this.getCurrentTime() });
     } else {
-       this.messageList.push({ message: this.message, nickname: chatUser, isSender: false, timestamp: `${hours}:${minutes} ${ampm}` });
+       this.messageList.push({ message: this.message, nickname: chatUser, isSender: false, timestamp: this.getCurrentTime() });
     }
 
     // Save the message list to session storage
@@ -162,6 +156,15 @@ export class ChatComponent {
       });
       document.body.appendChild(emojiPicker);
     }
+  }
+
+  getCurrentTime() {
+    const now = new Date();
+    const hours = now.getHours() % 12 || 12; // convert to 12-hour format
+    const minutes = now.getMinutes().toString().padStart(2, '0'); // add leading zero if necessary
+    const ampm = now.getHours() < 12 ? 'AM' : 'PM'; // determine AM/PM
+
+    return `${hours}:${minutes} ${ampm}`;
   }
 
   btnSettings_click() {
