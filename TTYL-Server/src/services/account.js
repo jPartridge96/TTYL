@@ -44,7 +44,7 @@ function updateAccountData(id, account) {
         return false;
     }
 
-    return db.query(`UPDATE accounts SET first_name = '${account.firstName}', first_name = '${account.lastName}' WHERE id = ${id}`)
+    return db.query(`UPDATE accounts SET first_name = '${account.firstName}', last_name = '${account.lastName}' WHERE id = ${id}`)
     .then(writeLog(`An account with ID '${id}' has been updated`));
     
 }

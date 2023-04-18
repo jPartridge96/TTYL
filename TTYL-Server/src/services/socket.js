@@ -82,7 +82,7 @@ function setupSocket(io) {
             writeLog(`${nickname} has disconnected (${reason}). [${socket.id}]`);
         });
 
-        socket.on('upload-avatar', ([phNum, blob]) => {
+        socket.on('upload-profile-photo', ([phNum, blob]) => {
             readAccountData(phNum)
             .then((account) => {
                 updateProfilePhoto(blob, account.p_id);

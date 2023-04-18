@@ -30,11 +30,9 @@ async function updateProfilePhoto(blob, p_id) {
     if(!p_id) {
         return false;
     }
-
-    console.log(blob);
     
     try {
-      await db.query(`UPDATE profiles SET avatar = '${blob}' WHERE id = ${p_id}`)
+      await db.query(`UPDATE profiles SET avatar = ? WHERE id = ?`, [blob, p_id])
       .then(writeLog(`The avatar for profile with ID '${p_id}' has been updated`));
       
     } catch (err) {
