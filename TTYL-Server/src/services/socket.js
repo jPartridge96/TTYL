@@ -13,14 +13,11 @@ let userList = new Map();
  */
 function setupSocket(io) {
     io.on('connection', (socket) => {
-        writeLog(`Incoming connection from ${socket.request.connection.remoteAddress}:${socket.request.connection.remotePort} [${socket.id}]`);
-
+        const ipAddress = socket.request.connection.remoteAddress.replace(/^::ffff:/, '');
         const nickname = socket.handshake.query.nickname;
-
-        addUser(nickname, socket.id);
-        socket.broadcast.emit('user-list', [...userList.keys()]);
-        socket.emit('user-list', [...userList.keys()]);
-
+        
+        writeLog(`Connection received from ${ipAddress}:${socket.request.connection.remotePort} [${nickname} / ${socket.id}]`);
+        
         socket.on('send-otp', (phNum) => sendOtp(phNum)
         .then(sid => {
             socket.otpSid = sid; // store the verification sid in the socket
@@ -43,6 +40,8 @@ function setupSocket(io) {
                             addUser(profile.nickname, socket.id);
                             socket.broadcast.emit('user-list', [...userList.keys()]);
                             socket.emit('user-list', [...userList.keys()]);
+
+                            writeLog(`${nickname} has connected. [${socket.id}]`);
                         });
                     }
                 });
@@ -74,7 +73,6 @@ function setupSocket(io) {
 
         socket.on('message', (data) => onMessageReceived(socket, data.nick, data.msg));
 
-        // Deprecated?
         socket.on('disconnect', (reason) => {
             delUser(nickname, socket.id);
             socket.broadcast.emit('user-list', [...userList.keys()]);
@@ -118,6 +116,9 @@ function setupSocket(io) {
                 updateAccountData(acc.id, account);
                 updateProfileData(acc.p_id, profile);
             })
+            
+            nickname = profile.nickname;
+            updUser(nickname, id)
         });
 
         socket.on('delete-account', (phNum) => {
@@ -130,7 +131,7 @@ function setupSocket(io) {
     });
 }
 
-// Deprecated?
+
 /**
  * Add user to the user list
  * @param {*} nickname 
@@ -144,7 +145,6 @@ function addUser(nickname, id) {
     }
 }
 
-// Deprecated?
 /**
  * Delete user from the user list
  * @param {*} nickname 
@@ -158,5 +158,20 @@ function delUser(nickname, id) {
         }
     }
 }
+
+/**
+ * Update the user's nickname in the user list
+ * @param {*} nickname 
+ * @param {*} id 
+ */
+function updUser(nickname, id) {
+    if (userList.has(nickname)) {
+        userList.get(nickname).add(id);
+    } else {
+        addUser(nickname, id);
+    }
+}
+  
+  
 
 module.exports = { userList, setupSocket };

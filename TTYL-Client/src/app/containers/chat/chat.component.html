@@ -35,62 +35,63 @@
     </div>
 
     <div class="input-group container-fluid">
-      <input type="text" class="form-control" placeholder="Search...">
-      <button class="btn btn-dark fa-solid fa-magnifying-glass"></button>
+      <input id="txtSearch" type="text" class="form-control disabled" placeholder="Search...">
+      <button [ngClass]="btnSearch_icon" class="btn btn-dark" (click)="btnSearch_click()"></button>
     </div>
 
     <hr class="h-color mx-4">
     <ul class="messages list-unstyled px-2">
-      <!-- First user example -->
-      <li class="active">
+
+      <!-- Connected users -->
+      <li class="{{first ? 'active' : ''}}" *ngFor="let user of userList; let first = first" (click)="btnUser_click($event)">
         <a class="text-decoration-none px-3 py-2 d-block d-flex">
           <span style="display: flex; align-items: center; justify-content: center;">
+            <!-- <img [src]="user.avatar ? user.avatar : '../../../assets/img/profile.jpg'" alt="avatar" class="rounded-circle profile-image img-thumbnail" style="width: 48px;"> -->
             <img src="../../../assets/img/profile.jpg" alt="avatar" class="rounded-circle profile-image img-thumbnail" style="width: 48px;">
           </span>
 
           <span>
-            <strong><small>Username</small></strong> <br/>
-            <small><small>A message from the user</small></small>
+            <strong><small>{{ user }}</small></strong> <br/>
+            <small><small>{{ getLastMessage(user) }}</small></small>
           </span>
         </a>
         <span class="badge right">
-              <span class="bg-dark rounded-pill text-white py-1 px-2" hidden>00</span>
-            </span>
+          <span class="bg-dark rounded-pill text-white py-1 px-2" >{{ getMessageCount(user) }}</span>
+        </span>
       </li>
 
-      <!-- Second user example -->
-      <li class="">
-        <a class="text-decoration-none px-3 py-2 d-block d-flex">
-          <span style="display: flex; align-items: center; justify-content: center;">
-            <img src="../../../assets/img/profile.jpg" alt="avatar" class="rounded-circle profile-image img-thumbnail" style="width: 48px;">
-          </span>
+      <!-- User examples -->
+<!--      <li class="">-->
+<!--        <a class="text-decoration-none px-3 py-2 d-block d-flex">-->
+<!--          <span style="display: flex; align-items: center; justify-content: center;">-->
+<!--            <img src="../../../assets/img/profile.jpg" alt="avatar" class="rounded-circle profile-image img-thumbnail" style="width: 48px;">-->
+<!--          </span>-->
 
-          <span>
-            <strong><small>Username</small></strong> <br/>
-            <small><small>A message from the user</small></small>
-          </span>
-        </a>
-        <span class="badge right">
-              <span class="bg-dark rounded-pill text-white py-1 px-2">01</span>
-            </span>
-      </li>
+<!--          <span>-->
+<!--            <strong><small>Username</small></strong> <br/>-->
+<!--            <small><small>A message from the user</small></small>-->
+<!--          </span>-->
+<!--        </a>-->
+<!--        <span class="badge right">-->
+<!--          <span class="bg-dark rounded-pill text-white py-1 px-2" hidden>00</span>-->
+<!--        </span>-->
+<!--      </li>-->
 
-      <!-- Third user example -->
-      <li class="">
-        <a class="text-decoration-none px-3 py-2 d-block d-flex">
-          <span style="display: flex; align-items: center; justify-content: center;">
-            <img src="../../../assets/img/profile.jpg" alt="avatar" class="rounded-circle profile-image img-thumbnail" style="width: 48px;">
-          </span>
+<!--      <li class="">-->
+<!--        <a class="text-decoration-none px-3 py-2 d-block d-flex">-->
+<!--          <span style="display: flex; align-items: center; justify-content: center;">-->
+<!--            <img src="../../../assets/img/profile.jpg" alt="avatar" class="rounded-circle profile-image img-thumbnail" style="width: 48px;">-->
+<!--          </span>-->
 
-          <span>
-            <strong><small>Username</small></strong> <br/>
-            <small><small>A message from the user</small></small>
-          </span>
-        </a>
-        <span class="badge right">
-              <span class="bg-dark rounded-pill text-white py-1 px-2">07</span>
-            </span>
-      </li>
+<!--          <span>-->
+<!--            <strong><small>Username</small></strong> <br/>-->
+<!--            <small><small>A message from the user</small></small>-->
+<!--          </span>-->
+<!--        </a>-->
+<!--        <span class="badge right">-->
+<!--          <span class="bg-dark rounded-pill text-white py-1 px-2" hidden>00</span>-->
+<!--        </span>-->
+<!--      </li>-->
     </ul>
     <hr class="h-color mx-4">
 
@@ -108,7 +109,7 @@
       </div>
 
       <div class="m-auto text-center px-3">
-        <i class="fa-solid fa-circle fa-fade fa-2xs" style="color: #00c200;"></i> Username
+        <i class="fa-solid fa-circle fa-fade fa-2xs" style="color: #00c200;"></i> Active Users ({{ userList.length }})
       </div>
 
       <span class="d-flex navbar-text" data-bs-toggle="modal" data-bs-target="#profileModal">
@@ -136,9 +137,9 @@
     <footer class="footer fixed-bottom mt-auto py-3 bg-light">
       <div class="container">
         <div class="input-group">
-          <textarea id="chatbox_input" rows="1" class="form-control " placeholder="Type your message" [(ngModel)]="message" (keyup.enter)="sendMessage(currentChatUser)"></textarea>
-          <button class="btn btn-outline-secondary fa-solid fa-face-smile" (click)="showEmojiPicker()"></button>
-          <button class="btn btn-outline-secondary fa-solid fa-paper-plane"(click)="sendMessage(currentChatUser)"></button>
+          <input type="text" id="chatbox_input" class="form-control" placeholder="Type your message" [(ngModel)]="message" (keyup.enter)="btnSendMessage_click(currentChatUser)" />
+          <button class="btn btn-outline-secondary fa-solid fa-face-smile" (click)="btnShowEmojis_click()"></button>
+          <button class="btn btn-outline-secondary fa-solid fa-paper-plane"(click)="btnSendMessage_click(currentChatUser)"></button>
         </div>
       </div>
     </footer>

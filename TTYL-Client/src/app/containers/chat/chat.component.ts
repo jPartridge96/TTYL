@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { AppComponent } from "../../app.component";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
-import {timestamp} from "rxjs";
 
 @Component({
   selector: 'app-chat',
@@ -21,9 +20,24 @@ export class ChatComponent {
 
   nickname = "";
   message = "";
-  messageList: {message: string, nickname: string, isSender: boolean, timestamp: string}[] = [];
+
+  messageList: {
+    message: string,
+    nickname: string,
+    isSender: boolean,
+    timestamp: string
+  }[] = [];
+
+  // userList: {
+  //   avatar: any
+  //   nickname: string,
+  //   lastMessage: string
+  // }[] = [];
+
   userList: string[] = [];
   socket: any;
+
+  btnSearch_icon: string = "fa-solid fa-magnifying-glass";
 
   constructor(private appComponent: AppComponent, private router: Router) {
     this.socket = appComponent.socket;
@@ -37,6 +51,7 @@ export class ChatComponent {
 
   ngOnInit() {
     const sidebarMessages = document.querySelectorAll<HTMLElement>(".messages li");
+
     const sidebar = document.querySelector<HTMLElement>(".sidebar")!;
     const openNav = document.querySelector<HTMLElement>(".open-btn")!;
     const closeNav = document.querySelector<HTMLElement>(".close-btn")!;
@@ -83,7 +98,21 @@ export class ChatComponent {
     this.currentChatUser = nick!;
   }
 
-  sendMessage(chatUser: string):void {
+  btnUser_click(event: any) {
+    const clickedConversation = (event.target as HTMLElement).closest('li');
+    if (!clickedConversation) {
+      return;
+    }
+
+    const activeConversation = document.querySelector(".messages li.active");
+    if (activeConversation) {
+      activeConversation.classList.remove('active');
+    }
+    clickedConversation.classList.add('active');
+  }
+
+
+  btnSendMessage_click(chatUser: string):void {
     if (!this.currentChatUser) {
       console.error('Current chat user has not been set');
       return;
@@ -115,9 +144,9 @@ export class ChatComponent {
   }
 
 
-  showEmojiPicker():void {
+  btnShowEmojis_click():void {
     // Toggle the emoji picker
-    const emojiPickerEle = document.querySelector('.emoji-picker') as HTMLTextAreaElement;
+    const emojiPickerEle = document.querySelector('.emoji-picker') as HTMLInputElement;
     if (emojiPickerEle) {
       emojiPickerEle.remove();
     } else {
@@ -146,7 +175,7 @@ export class ChatComponent {
         emojiButton.style.cursor = "pointer";
 
         emojiButton.addEventListener('click', () => {
-          const inputField = document.querySelector('textarea') as HTMLTextAreaElement;
+          const inputField = document.getElementById('chatbox_input') as HTMLInputElement;
           inputField.value += emoji;
           this.message = inputField.value;
           inputField.focus();
@@ -167,6 +196,33 @@ export class ChatComponent {
     return `${hours}:${minutes} ${ampm}`;
   }
 
+  getLastMessage(user: string) {
+    const userMessages = this.messageList.filter((message) => message.nickname === user);
+    if (userMessages.length > 0) {
+      const lastMessage = userMessages[userMessages.length - 1];
+      return `${lastMessage.message}`;
+    } else {
+      return "No messages yet";
+    }
+  }
+
+  getMessageCount(user: string) {
+    let count = 0;
+    for (let i = 0; i < this.messageList.length; i++) {
+      if (this.messageList[i].nickname === user) {
+        count++;
+      }
+    }
+    if (count < 10) {
+      return '0' + count;
+    } else if (count > 99) {
+      return '99+';
+    } else {
+      return count;
+    }
+  }
+
+
   btnSettings_click() {
     this.router.navigate(['/settings']);
   }
@@ -178,5 +234,16 @@ export class ChatComponent {
   btnLogout_click() {
     sessionStorage.clear();
     this.router.navigate(['/home']);
+  }
+
+  btnSearch_click() {
+    if(this.btnSearch_icon === 'fa-solid fa-magnifying-glass') {
+      this.btnSearch_icon = 'fa-solid fa-xmark fa-lg'
+      document.getElementById('txtSearch')!.setAttribute('disabled', 'true');
+
+    } else {
+      this.btnSearch_icon = 'fa-solid fa-magnifying-glass';
+      document.getElementById('txtSearch')!.removeAttribute('disabled');
+    }
   }
 }
