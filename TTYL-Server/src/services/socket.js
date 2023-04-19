@@ -2,11 +2,10 @@ const { writeLog } = require('../utils/logger');
 const { onMessageReceived } = require('../services/chat');
 const { verifyOtp, sendOtp } = require('../utils/otp');
 const { createAccountData, readAccountData, updateAccountData, deleteAccountData } = require('../services/account');
-const { createProfileData, readProfileData, updateProfilePhoto, updateProfileData, deleteProfileData } = require('../services/profile');
+const { createProfileData, readProfileData, updateProfileData, deleteProfileData, getProfilePhoto, updateProfilePhoto } = require('../services/profile');
 const db = require('../utils/database');
 
-let userList = new Map();
-
+let userList = [];
 /**
  * Setup socket.io
  * @param {*} io 
@@ -14,7 +13,7 @@ let userList = new Map();
 function setupSocket(io) {
     io.on('connection', (socket) => {
         const ipAddress = socket.request.connection.remoteAddress.replace(/^::ffff:/, '');
-        const nickname = socket.handshake.query.nickname;
+        let nickname = socket.handshake.query.nickname;
         
         writeLog(`Connection received from ${ipAddress}:${socket.request.connection.remotePort} [${nickname} / ${socket.id}]`);
         
@@ -37,9 +36,9 @@ function setupSocket(io) {
                         readProfileData(account.p_id).then((profile) => {
                             socket.emit('restore-session', { account, profile });
     
-                            addUser(profile.nickname, socket.id);
-                            socket.broadcast.emit('user-list', [...userList.keys()]);
-                            socket.emit('user-list', [...userList.keys()]);
+                            getProfilePhoto(profile.id).then((avatar) => {
+                                addUser(socket, profile.nickname, avatar);
+                            });
 
                             writeLog(`${nickname} has connected. [${socket.id}]`);
                         });
@@ -65,18 +64,16 @@ function setupSocket(io) {
             readProfileData(account.p_id).then((profile) => {
                 socket.emit('restore-session', { account, profile });
 
-                addUser(profile.nickname, socket.id);
-                socket.broadcast.emit('user-list', [...userList.keys()]);
-                socket.emit('user-list', [...userList.keys()]);
+                getProfilePhoto(profile.id).then((avatar) => {
+                    addUser(socket, profile.nickname, avatar);
+                });
             });
         }));
 
         socket.on('message', (data) => onMessageReceived(socket, data.nick, data.msg));
 
         socket.on('disconnect', (reason) => {
-            delUser(nickname, socket.id);
-            socket.broadcast.emit('user-list', [...userList.keys()]);
-            socket.emit('user-list', [...userList.keys()]);
+            delUser(socket); 
             writeLog(`${nickname} has disconnected (${reason}). [${socket.id}]`);
         });
 
@@ -89,20 +86,15 @@ function setupSocket(io) {
         
         socket.on('retrieve-avatar', (phNum) => {
             readAccountData(phNum)
-            .then(async (acc) => {
+            .then((acc) => {
                 try {
-                    const query = `SELECT avatar FROM profiles WHERE id = ${acc.p_id}`;
-                    const results = await db.connection.query(query);
-                    
-                    if(results){
-                        const avatarBuffer = results[0][0].avatar;
-                        const avatarBase64 = avatarBuffer.toString('base64');
-                        const avatarDataUri = `data:image/png;base64,${avatarBase64}`;
-                        
-                        socket.emit('send-avatar', avatarDataUri);
-                    } else {
-                        return false;
-                    }
+                    getProfilePhoto(acc.p_id).then((avatarUri) => {
+                        if(avatarUri) {
+                            socket.emit('send-avatar', avatarUri);
+                        } else {
+                            return false;
+                        }
+                    });
                 } catch (error) {
                     socket.emit('send-avatar', false)
                     writeLog(error);
@@ -115,10 +107,13 @@ function setupSocket(io) {
             .then((acc) => {
                 updateAccountData(acc.id, account);
                 updateProfileData(acc.p_id, profile);
-            })
-            
-            nickname = profile.nickname;
-            updUser(nickname, id)
+
+                nickname = profile.nickname;
+                getProfilePhoto(profile.id).then((avatar) => {
+                    updUser(socket, nickname, avatar);
+                });
+                
+            });
         });
 
         socket.on('delete-account', (phNum) => {
@@ -134,44 +129,44 @@ function setupSocket(io) {
 
 /**
  * Add user to the user list
+ * @param {*} socket 
  * @param {*} nickname 
- * @param {*} id 
+ * @param {*} avatar 
  */
-function addUser(nickname, id) {
-    if(!userList.has(nickname)) {
-        userList.set(nickname, new Set(id))
-    } else {
-        userList.get(nickname).add(id);
-    }
+function addUser(socket, nickname, avatar) {
+    let id = socket.id;
+    userList.push({id, nickname, avatar});
+
+    socket.broadcast.emit('user-list', userList);
+    socket.emit('user-list', userList);
 }
 
 /**
  * Delete user from the user list
- * @param {*} nickname 
- * @param {*} id 
+ * @param {*} socket 
  */
-function delUser(nickname, id) {
-    if(userList.has(nickname)) {
-        let userIds = userList.get(nickname);
-        if(userIds.size != 0) {
-            userList.delete(nickname);
-        }
+function delUser(socket) {
+    const index = userList.findIndex(user => user.id === socket.id);
+    if (index !== -1) {
+        userList.splice(index, 1);
     }
+
+    socket.broadcast.emit('user-list', userList);
+    socket.emit('user-list', userList);
 }
 
 /**
  * Update the user's nickname in the user list
- * @param {*} nickname 
- * @param {*} id 
+ * @param {*} socket  
+ * @param {*} nickname
+ * @param {*} avatar 
  */
-function updUser(nickname, id) {
-    if (userList.has(nickname)) {
-        userList.get(nickname).add(id);
-    } else {
-        addUser(nickname, id);
-    }
+function updUser(socket, nickname, avatar) {
+    delUser(socket);
+    addUser(socket, nickname, avatar);
+
+    socket.broadcast.emit('user-list', userList);
+    socket.emit('user-list', userList);
 }
-  
-  
 
 module.exports = { userList, setupSocket };

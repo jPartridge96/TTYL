@@ -46,37 +46,20 @@
       <li class="{{first ? 'active' : ''}}" *ngFor="let user of userList; let first = first" (click)="btnUser_click($event)">
         <a class="text-decoration-none px-3 py-2 d-block d-flex">
           <span style="display: flex; align-items: center; justify-content: center;">
-            <!-- <img [src]="user.avatar ? user.avatar : '../../../assets/img/profile.jpg'" alt="avatar" class="rounded-circle profile-image img-thumbnail" style="width: 48px;"> -->
-            <img src="../../../assets/img/profile.jpg" alt="avatar" class="rounded-circle profile-image img-thumbnail" style="width: 48px;">
+             <img [src]="user.avatar ? user.avatar : '../../../assets/img/profile.jpg'" alt="avatar" class="rounded-circle profile-image img-thumbnail" style="width: 48px; height: 48px; object-fit: cover;">
           </span>
 
           <span>
-            <strong><small>{{ user }}</small></strong> <br/>
-            <small><small>{{ getLastMessage(user) }}</small></small>
+            <strong><small>{{ user.nickname }}</small></strong> <br/>
+            <small><small>{{ getLastMessage(user.nickname) }}</small></small>
           </span>
         </a>
-        <span class="badge right">
-          <span class="bg-dark rounded-pill text-white py-1 px-2" >{{ getMessageCount(user) }}</span>
+        <span class="badge right" [hidden]="getMessageCount(user.nickname) === 0">
+          <span class="bg-dark rounded-pill text-white py-1 px-2" >{{ getMessageCount(user.nickname) }}</span>
         </span>
       </li>
 
       <!-- User examples -->
-<!--      <li class="">-->
-<!--        <a class="text-decoration-none px-3 py-2 d-block d-flex">-->
-<!--          <span style="display: flex; align-items: center; justify-content: center;">-->
-<!--            <img src="../../../assets/img/profile.jpg" alt="avatar" class="rounded-circle profile-image img-thumbnail" style="width: 48px;">-->
-<!--          </span>-->
-
-<!--          <span>-->
-<!--            <strong><small>Username</small></strong> <br/>-->
-<!--            <small><small>A message from the user</small></small>-->
-<!--          </span>-->
-<!--        </a>-->
-<!--        <span class="badge right">-->
-<!--          <span class="bg-dark rounded-pill text-white py-1 px-2" hidden>00</span>-->
-<!--        </span>-->
-<!--      </li>-->
-
 <!--      <li class="">-->
 <!--        <a class="text-decoration-none px-3 py-2 d-block d-flex">-->
 <!--          <span style="display: flex; align-items: center; justify-content: center;">-->

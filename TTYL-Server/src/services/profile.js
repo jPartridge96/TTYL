@@ -26,21 +26,6 @@ function readProfileData(p_id) {
     });
 }
 
-async function updateProfilePhoto(blob, p_id) {
-    if(!p_id) {
-        return false;
-    }
-    
-    try {
-      await db.query(`UPDATE profiles SET avatar = ? WHERE id = ?`, [blob, p_id])
-      .then(writeLog(`The avatar for profile with ID '${p_id}' has been updated`));
-      
-    } catch (err) {
-      console.error('Error updating profile photo:', err);
-    }
-}
-
-
 function updateProfileData(id, profile) {
     if(!id) {
         return false;
@@ -59,4 +44,27 @@ function deleteProfileData(id) {
     .then(writeLog(`A profile with ID '${id}' has been deleted`));
 }
 
-module.exports = { createProfileData, readProfileData, updateProfileData, updateProfilePhoto, deleteProfileData };
+async function getProfilePhoto(p_id) {
+    return db.query('SELECT avatar FROM profiles WHERE id = ?', [p_id])
+    .then((results) => {
+        const avatarBuffer = results[0][0].avatar;
+        const avatarBase64 = avatarBuffer.toString('base64');
+        return `data:image/png;base64,${avatarBase64}`;
+    })
+}
+
+async function updateProfilePhoto(blob, p_id) {
+    if(!p_id) {
+        return false;
+    }
+    
+    try {
+      await db.query(`UPDATE profiles SET avatar = ? WHERE id = ?`, [blob, p_id])
+      .then(writeLog(`The avatar for profile with ID '${p_id}' has been updated`));
+      
+    } catch (err) {
+      console.error('Error updating profile photo:', err);
+    }
+}
+
+module.exports = { createProfileData, readProfileData, updateProfileData, deleteProfileData, getProfilePhoto, updateProfilePhoto };

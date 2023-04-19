@@ -28,13 +28,12 @@ export class ChatComponent {
     timestamp: string
   }[] = [];
 
-  // userList: {
-  //   avatar: any
-  //   nickname: string,
-  //   lastMessage: string
-  // }[] = [];
+  userList: {
+    avatar: any
+    nickname: string
+  }[] = [];
 
-  userList: string[] = [];
+  // userList: string[] = [];
   socket: any;
 
   btnSearch_icon: string = "fa-solid fa-magnifying-glass";
@@ -85,7 +84,7 @@ export class ChatComponent {
 
     this.socket.emit('set-user-name', nick);
 
-    this.socket.on('user-list', (userList: string[]) => {
+    this.socket.on('user-list', (userList: { avatar: any, nickname: string }[]) => {
       this.userList = userList;
     });
 
