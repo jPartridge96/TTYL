@@ -109,7 +109,7 @@ function setupSocket(io) {
                 updateProfileData(acc.p_id, profile);
 
                 nickname = profile.nickname;
-                getProfilePhoto(profile.id).then((avatar) => {
+                getProfilePhoto(acc.p_id).then((avatar) => {
                     updUser(socket, nickname, avatar);
                 });
                 
