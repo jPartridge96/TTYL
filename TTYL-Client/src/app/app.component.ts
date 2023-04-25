@@ -13,7 +13,7 @@ export class AppComponent {
   ngOnInit() {
     if (this.socket == null) {
       const nickname = sessionStorage.getItem('nickname') || 'anonymous';
-      const remoteUrl = `https://www.totyl.ca:3000?nickname=${nickname}`;
+      const remoteUrl = `https://3.17.206.117:3000?nickname=${nickname}`;
       const localUrl = `http://localhost:3000?nickname=${nickname}`;
 
       this.socket = io.io(remoteUrl);
