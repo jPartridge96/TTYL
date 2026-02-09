@@ -16,7 +16,7 @@
     "moment-timezone": "^0.5.41",
     "mysql2": "^3.9.8",
     "nodemon": "^2.0.21",
-    "socket.io": "^4.6.1",
+    "socket.io": "^4.8.3",
     "twilio": "^4.23.0"
   }
 }
